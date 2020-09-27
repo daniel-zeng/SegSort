@@ -217,6 +217,6 @@ def pspnet_resnet101(xs,
         use_global_status,
         reuse=reuse)
     for s in score:
-      scores.append([s])
+      scores.append([s]) #why is this in an array? lol
 
   return scores

@@ -32,8 +32,8 @@ K_IN_NEAREST_NEIGHBORS=15
 SNAPSHOT_DIR=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k
 
 # Set up the procedure pipeline.
-IS_TRAIN=1
-IS_PROTOTYPE=1
+IS_TRAIN=0
+IS_PROTOTYPE=0
 IS_INFERENCE_MSC=1
 IS_BENCHMARK=1
 
@@ -41,7 +41,7 @@ IS_BENCHMARK=1
 export PYTHONPATH=`pwd`:$PYTHONPATH
 
 # Set up the data directory.
-DATAROOT=/ssd/jyh/datasets
+DATAROOT=/home/dz/SegSort/dataset/
 
 # Train.
 if [ ${IS_TRAIN} -eq 1 ]; then
@@ -49,7 +49,7 @@ if [ ${IS_TRAIN} -eq 1 ]; then
     --snapshot_dir ${SNAPSHOT_DIR}\
     --restore_from snapshots/imagenet/trained/resnet_v1_101.ckpt\
     --data_list dataset/voc12/train+.txt\
-    --data_dir ${DATAROOT}/VOCdevkit/\
+    --data_dir ${DATAROOT}\
     --batch_size ${BATCH_SIZE}\
     --save_pred_every ${NUM_STEPS}\
     --update_tb_every 50\
@@ -71,7 +71,7 @@ fi
 # Extract prototypes.
 if [ ${IS_PROTOTYPE} -eq 1 ]; then
   python3 pyscripts/inference/extract_prototypes.py\
-    --data_dir ${DATAROOT}/VOCdevkit/\
+    --data_dir ${DATAROOT}\
     --data_list dataset/voc12/train+.txt\
     --input_size ${INFERENCE_INPUT_SIZE}\
     --strides ${INFERENCE_STRIDES}\
@@ -87,7 +87,7 @@ fi
 # Inference.
 if [ ${IS_INFERENCE_MSC} -eq 1 ]; then
   python3 pyscripts/inference/inference_segsort_msc.py\
-    --data_dir ${DATAROOT}/VOCdevkit/\
+    --data_dir ${DATAROOT}\
     --data_list dataset/voc12/${INFERENCE_SPLIT}.txt\
     --input_size ${INFERENCE_INPUT_SIZE}\
     --strides ${INFERENCE_STRIDES}\
@@ -109,6 +109,6 @@ fi
 if [ ${IS_BENCHMARK} -eq 1 ]; then
   python3 pyscripts/benchmark/benchmark_by_mIoU.py\
     --pred_dir ${SNAPSHOT_DIR}/results/${INFERENCE_SPLIT}/gray/\
-    --gt_dir ${DATAROOT}/VOCdevkit/VOC2012/segcls/\
+    --gt_dir ${DATAROOT}VOC2012/segcls/\
     --num_classes ${NUM_CLASSES}
 fi

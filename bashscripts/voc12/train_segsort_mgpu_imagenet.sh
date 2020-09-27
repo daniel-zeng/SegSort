@@ -14,6 +14,7 @@ WEIGHT_DECAY=5e-4
 ITER_SIZE=1
 NUM_STEPS1=100000
 NUM_STEPS2=30000
+NUM_STEPS3=10000
 NUM_CLASSES=21
 NUM_GPU=4
 LEARNING_RATE=2e-3
@@ -35,27 +36,31 @@ K_IN_NEAREST_NEIGHBORS=21
 SNAPSHOT_DIR=snapshots/voc12/segsort/segsort_mgpu_lr2e-3_it100k
 
 # Set up the procedure pipeline.
-IS_TRAIN_1=1
-IS_PROTOTYPE_1=1
-IS_INFERENCE_1=1
-IS_BENCHMARK_1=1
-IS_TRAIN_2=1
-IS_PROTOTYPE_2=1
+IS_TRAIN_1=0
+IS_PROTOTYPE_1=0
+IS_INFERENCE_1=0
+IS_BENCHMARK_1=0
+IS_TRAIN_2=0
+
+IS_PROTOTYPE_2=0
 IS_INFERENCE_2=0
-IS_INFERENCE_MSC_2=1
-IS_BENCHMARK_2=1
+IS_INFERENCE_MSC_2=0
+IS_BENCHMARK_2=0
+
+IS_TRAIN_INET_1=1
 
 # Update PYTHONPATH.
 export PYTHONPATH=`pwd`:$PYTHONPATH
 
 # Set up the data directory.
 DATAROOT=/home/dz/SegSort/dataset/
+DATAROOT_IMGNET=/home/public/public_dataset/ILSVRC2014/Img/
 
 # Train for the 1st stage.
 if [ ${IS_TRAIN_1} -eq 1 ]; then
   python3 pyscripts/train/train_segsort_mgpu.py\
     --snapshot_dir ${SNAPSHOT_DIR}/stage1\
-    --restore_from snapshots/imagenet/trained/resnet_v1_101.ckpt\
+    # --restore_from snapshots/imagenet/trained/resnet_v1_101.ckpt\
     --data_list dataset/voc12/train+.txt\
     --data_dir ${DATAROOT}\
     --batch_size ${BATCH_SIZE}\
@@ -215,4 +220,28 @@ if [ ${IS_BENCHMARK_2} -eq 1 ]; then
     --pred_dir ${SNAPSHOT_DIR}/stage2/results/${INFERENCE_SPLIT}/gray/\
     --gt_dir ${DATAROOT}VOC2012/segcls/\
     --num_classes ${NUM_CLASSES}
+fi
+
+LEARNING_RATE=5e-3
+# Train ImageNet for third stage.
+if [ ${IS_TRAIN_INET_1} -eq 1 ]; then
+  python3 pyscripts/train/train_segsort_imagenet_class.py\
+    --snapshot_dir ${SNAPSHOT_DIR}/stage3\
+    --restore_from ${SNAPSHOT_DIR}/stage2/model.ckpt-${NUM_STEPS1}\
+    --data_dir ${DATAROOT_IMGNET}\
+    --batch_size ${BATCH_SIZE}\
+    --save_pred_every 10000\
+    --update_tb_every 50\
+    --input_size ${TRAIN_INPUT_SIZE}\
+    --learning_rate ${LEARNING_RATE}\
+    --weight_decay ${WEIGHT_DECAY}\
+    --iter_size ${ITER_SIZE}\
+    --num_classes ${NUM_CLASSES}\
+    --num_steps $(($NUM_STEPS3+1))\
+    --num_gpu ${NUM_GPU}\
+    --embedding_dim ${EMBEDDING_DIM}\
+    --random_mirror\
+    --random_scale\
+    --random_crop\
+    --is_training
 fi

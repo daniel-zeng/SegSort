@@ -41,11 +41,11 @@ def add_segsort_loss(embedding,
     embedding_list = []
     for bs in range(batch_size):
       cur_semantic_labels = tf.reshape(semantic_labels[bs], [-1])
-      cur_cluster_labels = tf.reshape(cluster_labels[bs], [-1])
+      cur_cluster_labels = tf.reshape(cluster_labels[bs], [-1]) #oh so CURRENT cluster labels, could be wrong then
       cur_loc_features = tf.reshape(loc_features[bs], [-1, 2])
       cur_embedding = tf.reshape(embedding[bs], [-1, embedding_dim])
 
-      valid_pixels = tf.where(tf.not_equal(cur_semantic_labels, ignore_label))
+      valid_pixels = tf.where(tf.not_equal(cur_semantic_labels, ignore_label)) #do masking (till L55)
       cur_semantic_labels = tf.squeeze(tf.gather(cur_semantic_labels,
                                                  valid_pixels), axis=1)
       cur_cluster_labels = tf.squeeze(tf.gather(cur_cluster_labels,
@@ -54,7 +54,7 @@ def add_segsort_loss(embedding,
       cur_embedding = tf.squeeze(tf.gather(cur_embedding, valid_pixels), axis=1)
 
       embedding_with_loc = tf.concat([cur_embedding, cur_loc_features], 1)
-      embedding_with_loc = common_utils.normalize_embedding(embedding_with_loc)
+      embedding_with_loc = common_utils.normalize_embedding(embedding_with_loc) #qq: redundant normalization? like dont need to normalize above then
       cur_cluster_labels = common_utils.kmeans_with_initial_labels(
           embedding_with_loc,
           cur_cluster_labels,
