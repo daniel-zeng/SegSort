@@ -111,7 +111,8 @@ def load(saver, sess, ckpt_path):
     sess: TensorFlow session.
     ckpt_path: path to checkpoint file with parameters.
   """ 
-  saver.restore(sess, ckpt_path)
+
+  saver.restore(sess, "./" + ckpt_path)
   print('Restored model parameters from {}'.format(ckpt_path))
 
 
@@ -149,7 +150,7 @@ def main():
 
   #set up input
   image_batch = tf.placeholder(tf.float32, [args.batch_size, w, h, 3])
-  labels_batch = tf.placeholder(tf.int32, [args.batch_size, 1])
+  labels_batch = tf.placeholder(tf.int32, [args.batch_size])
 
 
   # Allocate data evenly to each gpu.

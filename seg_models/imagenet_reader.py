@@ -42,7 +42,6 @@ class Normalize(object):
 
 
 def simple_collate(batch):
-  print(len(batch))
   imgs = np.array([b[0] for b in batch])
   labels = np.array([b[1] for b in batch])
   # for b in batch:

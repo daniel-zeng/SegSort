@@ -14,9 +14,9 @@ WEIGHT_DECAY=5e-4
 ITER_SIZE=1
 NUM_STEPS1=100000
 NUM_STEPS2=30000
-NUM_STEPS3=10000
+NUM_STEPS3=100 #change to 10000 later
 NUM_CLASSES=21
-NUM_GPU=4
+NUM_GPU=2
 LEARNING_RATE=2e-3
 
 # Set up parameters for inference.
@@ -227,7 +227,7 @@ LEARNING_RATE=5e-3
 if [ ${IS_TRAIN_INET_1} -eq 1 ]; then
   python3 pyscripts/train/train_segsort_imagenet_class.py\
     --snapshot_dir ${SNAPSHOT_DIR}/stage3\
-    --restore_from ${SNAPSHOT_DIR}/stage2/model.ckpt-${NUM_STEPS1}\
+    --restore_from ${SNAPSHOT_DIR}/stage2/model.ckpt-20000\
     --data_dir ${DATAROOT_IMGNET}\
     --batch_size ${BATCH_SIZE}\
     --save_pred_every 10000\
