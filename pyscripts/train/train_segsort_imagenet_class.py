@@ -54,7 +54,7 @@ def get_arguments():
                       help='Momentum component of the optimiser.')
   parser.add_argument('--weight_decay', type=float, default=5e-4,
                       help='Regularisation parameter for L2-loss.')
-  parser.add_argument('--num_classes', type=int, default=21,
+  parser.add_argument('--num_classes', type=int, default=1000,
                       help='Number of classes to predict.')
   parser.add_argument('--num_steps', type=int, default=20000,
                       help='Number of training steps.')
@@ -154,7 +154,7 @@ def main():
 
 
   # Allocate data evenly to each gpu.
-  images_mgpu = nn_mgpu.split(image_batch, args.num_gpu-1)
+  images_mgpu = nn_mgpu.split(image_batch, args.num_gpu) #last gpu is good
 
   # Create network and output predictions.
   outputs_mgpu = model(images_mgpu, #calls pspnet_resnet101
@@ -169,19 +169,16 @@ def main():
   # Collect embedding from each gpu.
   with tf.device('/gpu:{:d}'.format(args.num_gpu-1)): #qq: last gpu used to compute loss?
     embedding_list = [outputs[0] for outputs in outputs_mgpu]
-    embedding = tf.concat(embedding_list, axis=0) #poc - use embedding list!!
-
-    embed_shape = tf.shape(embedding)
-    #qq: use this to figure out ? imagining it is [batch]x60x60x[emb_size]
+    embedding = tf.concat(embedding_list, axis=0) # [batch]x60x60x[emb_size]
 
     with tf.variable_scope("imagenet_classify"):
       conv_1 = tf.layers.conv2d(inputs = embedding, filters=args.embedding_dim, kernel_size=5, 
-        padding="same", activation=tf.nn.relu) #[batch]x30x30x[emb_size]
+        strides=(2,2), padding="same", activation=tf.nn.relu) #[batch]x30x30x[emb_size]
       conv_2 = tf.layers.conv2d(inputs = conv_1, filters=args.embedding_dim, kernel_size=5, 
-        padding="same", activation=tf.nn.relu) #[batch]x15x15x[emb_size]
+        strides=(2,2), padding="same", activation=tf.nn.relu) #[batch]x15x15x[emb_size]
       
       y_out = tf.layers.flatten(conv_2) 
-      y_out = tf.layers.dense(y_out, 1000, activation=tf.nn.relu)
+      y_out = tf.layers.dense(y_out, args.num_classes, activation=tf.nn.relu)
     
     # Define weight regularization loss.
     # w = args.weight_decay
@@ -191,9 +188,12 @@ def main():
 
     # Define loss terms.
     classify_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-      logits=y_out, labels=tf.one_hot(labels_batch, 1000)))
+      logits=y_out, labels=tf.one_hot(labels_batch, args.num_classes)))
     # mean_seg_loss = seg_losses
     # reduced_loss = mean_seg_loss + mean_l2_loss
+
+  interim = tf.cast(tf.equal(tf.cast(tf.argmax(y_out, axis=1), tf.int32), labels_batch), tf.float32)
+  train_acc = tf.reduce_mean(interim)
 
   # Grab variable names which are used for training.
   # todo: grab the correct variables for the last layer
@@ -288,9 +288,9 @@ def main():
                                           feed_dict=feed_dict)
         # summary_writer.add_summary(summary, step)
       else:
-        sess_outs = [classify_loss, train_op, embed_shape]
-        loss_value, _, sp = sess.run(sess_outs, feed_dict=feed_dict)
-        print(sp)
+        sess_outs = [classify_loss, train_op, train_acc]
+        loss_value, _, train_acc_v = sess.run(sess_outs, feed_dict=feed_dict)
+        print(train_acc_v)
 
       step_loss += loss_value
 
@@ -305,6 +305,9 @@ def main():
     duration = time.time() - start_time
     desc = 'loss = {:.3f}, lr = {:.6f}'.format(step_loss, lr)
     pbar.set_description(desc)
+
+
+  
 
   coord.request_stop()
   coord.join(threads)

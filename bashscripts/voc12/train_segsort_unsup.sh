@@ -34,7 +34,7 @@ SNAPSHOT_DIR=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k
 # Set up the procedure pipeline.
 IS_TRAIN=0
 IS_PROTOTYPE=0
-IS_INFERENCE_MSC=1
+IS_INFERENCE_MSC=0
 IS_BENCHMARK=1
 
 # Update PYTHONPATH.
