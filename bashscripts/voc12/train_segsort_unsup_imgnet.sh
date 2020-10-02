@@ -8,6 +8,10 @@
 
 
 # Set up parameters for training. 
+
+#tw: large epochs, 256 batch size
+#
+
 BATCH_SIZE=64
 TRAIN_INPUT_SIZE=240,240
 WEIGHT_DECAY=5e-4

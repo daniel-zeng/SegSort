@@ -163,23 +163,30 @@ def main():
                        args.use_global_status)
 
   # Grab variable names which should be restored from checkpoints.
+  # tw: double check
   restore_var = [
     v for v in tf.global_variables() if 'crop_image_batch' not in v.name]
 
   # Collect embedding from each gpu.
   with tf.device('/gpu:{:d}'.format(args.num_gpu-1)): #qq: last gpu used to compute loss?
     embedding_list = [outputs[0] for outputs in outputs_mgpu]
-    embedding = tf.concat(embedding_list, axis=0) # [batch]x60x60x[emb_size]
+    embedding = tf.concat(embedding_list, axis=0) # [batch]x input/8 x input/8 x[emb_size]
 
     with tf.variable_scope("imagenet_classify"):
+      #tw: replace with max/average pooling
+      # 1 max/avg pooling 30x30xemb -> 1x1xemb
+      # kernel size = 30, stride = 30, padding = valid
+
+      # to change:
       conv_1 = tf.layers.conv2d(inputs = embedding, filters=args.embedding_dim, kernel_size=5, 
         strides=(2,2), padding="same", activation=tf.nn.relu) #[batch]x30x30x[emb_size]
       conv_2 = tf.layers.conv2d(inputs = conv_1, filters=args.embedding_dim, kernel_size=5, 
         strides=(2,2), padding="same", activation=tf.nn.relu) #[batch]x15x15x[emb_size]
       
       y_out = tf.layers.flatten(conv_2) 
-      y_out = tf.layers.dense(y_out, args.num_classes, activation=tf.nn.relu)
+      y_out = tf.layers.dense(y_out, args.num_classes) #-inf to inf
     
+    # tw: try weightd decau on y_out later
     # Define weight regularization loss.
     # w = args.weight_decay
     # l2_losses = [w*tf.nn.l2_loss(v) for v in tf.trainable_variables()
@@ -187,8 +194,12 @@ def main():
     # mean_l2_loss = tf.add_n(l2_losses)
 
     # Define loss terms.
+
+    #also shouldn't this be unsupervised? lol...
     classify_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
       logits=y_out, labels=tf.one_hot(labels_batch, args.num_classes)))
+    #tw: check how cpc does linear classifier
+
     # mean_seg_loss = seg_losses
     # reduced_loss = mean_seg_loss + mean_l2_loss
 
@@ -205,7 +216,12 @@ def main():
       base_lr,
       tf.pow((1-step_ph/args.num_steps), args.power))
 
-  opt_imgnet = tf.train.MomentumOptimizer(learning_rate, args.momentum)
+  opt_imgnet = tf.train.MomentumOptimizer(learning_rate, args.momentum) #tw: add imgnet variables
+    #tw: check original training script
+
+  #tw: learning rate policies:
+    # step size 
+    # exponential
 
   # Define tensorflow train op to minimize loss
   train_op = opt_imgnet.minimize(classify_loss)

@@ -17,7 +17,7 @@ class ToNumpy(object):
     return np.array(pic)
 
 class Normalize(object):
-  def __init__(self, mean, std):
+  def __init__(self, mean, std = None):
     self.mean = mean
     self.std = std
 
@@ -30,13 +30,17 @@ class Normalize(object):
         Numpy: Converted image.
       """
     # print(type(pic))
+
+    #tw: all you need to do: subtract mean
+
     pic = pic.astype(np.float32)
     # pdb.set_trace()
     # print(pic[0, 0])
-    pic /= 255
-    pic -= self.mean
+    #tw: IMG_MEAN = np.array((122.675, 116.669, 104.008), dtype=np.float32)
+    pic /= 255 #tw: original net not like this
+    pic -= self.mean # already use mean value
     # print(pic[0, 0])
-    pic /= self.std
+    pic /= self.std #tw: dont do this
     # print(pic[0, 0])
     return np.array(pic)
 
@@ -65,8 +69,7 @@ class ImageNetReader(object):
         transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
         transforms.RandomHorizontalFlip(),
         ToNumpy(),
-        Normalize(mean=np.array([0.485, 0.456, 0.406]),
-                  std=np.array([0.229, 0.224, 0.225])),
+        Normalize(mean=np.array([122.675, 116.669, 104.008])),
     ]))
 
     # i = 0
