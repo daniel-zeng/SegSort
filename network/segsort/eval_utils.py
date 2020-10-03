@@ -32,7 +32,7 @@ def find_majority_label_index(labels, cluster_labels):
   return select_pixels, majority_labels
 
 
-def extract_trained_prototypes(embedding,
+def extract_trained_prototypes(embedding, #seems like only extracting prototypes for a single image ho
                                location_features,
                                cluster_labels,
                                num_clusters,

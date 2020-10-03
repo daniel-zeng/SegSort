@@ -45,8 +45,8 @@ def calculate_prototypes_from_labels(embedding,
   if max_label is None:
     max_label = tf.reduce_max(labels) + 1
   one_hot_labels = tf.one_hot(labels, tf.cast(max_label, tf.int32))
-  prototypes = tf.matmul(one_hot_labels, embedding, transpose_a=True)
-  prototypes = normalize_embedding(prototypes)
+  prototypes = tf.matmul(one_hot_labels, embedding, transpose_a=True) #basically a summing operation
+  prototypes = normalize_embedding(prototypes) #take the mean via normalization
   return prototypes
 
 

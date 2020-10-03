@@ -47,26 +47,17 @@ def get_arguments():
                       help='Whether to updates weights.')
   parser.add_argument('--use_global_status', action='store_true',
                       help='Whether to updates moving mean and variance.')
-  parser.add_argument('--learning_rate', type=float, default=2.5e-4,
-                      help='Base learning rate.')
-  parser.add_argument('--power', type=float, default=0.9,
-                      help='Decay for poly learing rate policy.')
-  parser.add_argument('--momentum', type=float, default=0.9,
-                      help='Momentum component of the optimiser.')
-  parser.add_argument('--weight_decay', type=float, default=5e-4,
-                      help='Regularisation parameter for L2-loss.')
+  
+  
   parser.add_argument('--num_classes', type=int, default=1000,
                       help='Number of classes to predict.')
-  parser.add_argument('--num_steps', type=int, default=20000,
-                      help='Number of training steps.')
-  parser.add_argument('--iter_size', type=int, default=10,
-                      help='Number of iteration to update weights')
-  parser.add_argument('--random_mirror', action='store_true',
-                      help='Whether to randomly mirror the inputs.')
-  parser.add_argument('--random_crop', action='store_true',
-                      help='Whether to randomly crop the inputs.')
-  parser.add_argument('--random_scale', action='store_true',
-                      help='Whether to randomly scale the inputs.')
+  
+  # parser.add_argument('--random_mirror', action='store_true',
+  #                     help='Whether to randomly mirror the inputs.')
+  # parser.add_argument('--random_crop', action='store_true',
+  #                     help='Whether to randomly crop the inputs.')
+  # parser.add_argument('--random_scale', action='store_true',
+  #                     help='Whether to randomly scale the inputs.')
   # SegSort parameters.
   parser.add_argument('--embedding_dim', type=int, default=32,
                       help='Dimension of the feature embeddings.')
@@ -79,7 +70,9 @@ def get_arguments():
   parser.add_argument('--update_tb_every', type=int, default=20,
                       help='Update summaries every often.')
   parser.add_argument('--snapshot_dir', type=str, default='',
-                      help='Where to save snapshots of the model.')
+                      help='Where to save snapshots.')
+  parser.add_argument('--save_dir', type=str, default='',
+                      help='Where to save numpy embeddings.')
   parser.add_argument('--not_restore_classifier', action='store_true',
                       help='Whether to not restore classifier layers.')
 
@@ -130,16 +123,48 @@ def img_loader_sanity(reader):
   print(np.min(img_np))
   img_np /= 255 # for mpl.imsave
   mpl.image.imsave('sanity.jpg', img_np[0])
+
+curr_class_name = ""
+curr_idx = 0
+def save_numpy_to_dir(save_dir, numpy_list, label_list, idx_to_class):
+    # print(len(numpy_list))
+    # print(type(numpy_list[0]))
+    # print(numpy_list[0].shape)
+    # print(idx_to_class)
+    global curr_class_name
+    global curr_idx
+
+    #store prev class name
+    #if different, create 
+    for idx, label in enumerate(label_list):
+      class_name = idx_to_class[label]
+
+      save_folder = os.path.join(save_dir, curr_class_name)
+      if class_name != curr_class_name:
+        curr_class_name = class_name
+        save_folder = os.path.join(save_dir, curr_class_name)
+        #make directory
+        if not os.path.exists(save_folder):
+          os.makedirs(save_folder)
+        curr_idx = 0
+
+      #save numpy at idx to save_dir + curr_class_name
+      save_npy = os.path.join(save_folder, "{}.npy".format(curr_idx))
+      with open(save_npy, 'wb') as f:
+        np.save(f, numpy_list[idx])
+
+      curr_idx += 1
   
 
 def main():
-  print("IMG_NET")
+  print("IMG_NET extracting embeddings")
 
   """Create the model and start the training."""
 
   # Read CL arguments and snapshot the arguments into text file.
   args = get_arguments()
   utils.general.snapshot_arg(args)
+  global curr_class_name
     
   # The segmentation network is stride 8 by default.
   h, w = map(int, args.input_size.split(','))
@@ -157,15 +182,13 @@ def main():
 
   reader = ImageNetReader(args.data_dir + "train/", args.batch_size, h, 10, False)
 
-  
-  #num supposed images: 1281167
   #num batches: 20019 * 64 = 1281216 (close enough, batch is overest.)
 
   #set up input
   image_batch = tf.placeholder(tf.float32, [args.batch_size, w, h, 3])
   labels_batch = tf.placeholder(tf.int32, [args.batch_size])
 
-  # Allocate data evenly to each gpu.
+  # Allocated data evenly to each gpu, because batch-size is only 1 -- nvm
   images_mgpu = nn_mgpu.split(image_batch, args.num_gpu) #last gpu is good
 
   # Create network and output predictions.
@@ -184,98 +207,9 @@ def main():
     embedding_list = [outputs[0] for outputs in outputs_mgpu]
     embedding = tf.concat(embedding_list, axis=0) # [batch]x input/8 x input/8 x[emb_size]
 
-    with tf.variable_scope("imagenet_classify"):
-      #tw: replace with max/average pooling
-      # 1 max/avg pooling 30x30xemb -> 1x1xemb
-      # kernel size = 30, stride = 30, padding = valid
+  #tw: check how cpc does linear classifier
 
-      # to change:
-      conv_1 = tf.layers.conv2d(inputs = embedding, filters=args.embedding_dim, kernel_size=5, 
-        strides=(2,2), padding="same", activation=tf.nn.relu) #[batch]x30x30x[emb_size]
-      conv_2 = tf.layers.conv2d(inputs = conv_1, filters=args.embedding_dim, kernel_size=5, 
-        strides=(2,2), padding="same", activation=tf.nn.relu) #[batch]x15x15x[emb_size]
-      
-      y_out = tf.layers.flatten(conv_2) 
-      y_out = tf.layers.dense(y_out, args.num_classes) #-inf to inf
-    
-    # tw: try weightd decau on y_out later
-    # Define weight regularization loss.
-    # w = args.weight_decay
-    # l2_losses = [w*tf.nn.l2_loss(v) for v in tf.trainable_variables()
-    #            if 'weights' in v.name]
-    # mean_l2_loss = tf.add_n(l2_losses)
-
-    # Define loss terms.
-
-    #also shouldn't this be unsupervised? lol...
-    classify_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(
-      logits=y_out, labels=tf.one_hot(labels_batch, args.num_classes)))
-    #tw: check how cpc does linear classifier
-
-    # mean_seg_loss = seg_losses
-    # reduced_loss = mean_seg_loss + mean_l2_loss
-
-  interim = tf.cast(tf.equal(tf.cast(tf.argmax(y_out, axis=1), tf.int32), labels_batch), tf.float32)
-  train_acc = tf.reduce_mean(interim)
-
-  # Grab variable names which are used for training.
-  # todo: grab the correct variables for the last layer
-  imgnet_trainable = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, 'imagenet_classify')
-
-  # Define optimisation parameters.
-  base_lr = tf.constant(args.learning_rate)
-  learning_rate = tf.scalar_mul(
-      base_lr,
-      tf.pow((1-step_ph/args.num_steps), args.power))
-
-  opt_imgnet = tf.train.MomentumOptimizer(learning_rate, args.momentum) #tw: add imgnet variables
-    #tw: check original training script
-
-  #tw: learning rate policies:
-    # step size 
-    # exponential
-
-  # Define tensorflow train op to minimize loss
-  train_op = opt_imgnet.minimize(classify_loss)
-
-  # Process for visualisation.
-  # with tf.device('/cpu:0'):
-  #   # Image summary for input image, ground-truth label and prediction.
-  #   cat_output = tf.concat([o[-1] for o in outputs_mgpu], axis=0)
-  #   output_vis = tf.image.resize_nearest_neighbor(
-  #       cat_output, tf.shape(image_batch)[1:3,])
-  #   output_vis = tf.argmax(output_vis, axis=3)
-  #   output_vis = tf.expand_dims(output_vis, dim=3)
-  #   output_vis = tf.cast(output_vis, dtype=tf.uint8)
-    
-  #   labels_vis = tf.cast(label_batch, dtype=tf.uint8)
- 
-  #   in_summary = tf.py_func(
-  #       utils.general.inv_preprocess,
-  #       [image_batch, IMG_MEAN],
-  #       tf.uint8)
-  #   gt_summary = tf.py_func(
-  #       utils.general.decode_labels,
-  #       [labels_vis, args.num_classes],
-  #       tf.uint8)
-  #   out_summary = tf.py_func(
-  #       utils.general.decode_labels,
-  #       [output_vis, args.num_classes],
-  #       tf.uint8)
-  #   # Concatenate image summaries in a row.
-  #   total_summary = tf.summary.image(
-  #       'images', 
-  #       tf.concat(axis=2, values=[in_summary, gt_summary, out_summary]), 
-  #       max_outputs=args.batch_size)
-
-  #   # Scalar summary for different loss terms.
-  #   seg_loss_summary = tf.summary.scalar(
-  #       'seg_loss', mean_seg_loss)
-  #   total_summary = tf.summary.merge_all()
-
-  #   summary_writer = tf.summary.FileWriter(
-  #       args.snapshot_dir,
-  #       graph=tf.get_default_graph())
+  #tw: check original training script
 
   # Set up tf session and initialize variables. 
   config = tf.ConfigProto()
@@ -294,49 +228,28 @@ def main():
   # Start queue threads.
   threads = tf.train.start_queue_runners(coord=coord, sess=sess)
 
-  # Saver for storing checkpoints of the model.
-  saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=10)
-
   # Iterate over training steps.
-  pbar = tqdm(range(args.num_steps))
+  pbar = tqdm(range(reader.num_batches))
+  print(reader.num_batches)
+  #num supposed images: 1281167
+
+  train_save_dir = os.path.join(args.save_dir, "train")
+  curr_class_name_tmp = curr_class_name
   for step in pbar:
     start_time = time.time()
 
-    #todo: see if reader dequeue gets emptied
-    img_np, labels_truth = reader.dequeue()
+    img_np, labels_truth = reader.dequeue()    
+    emb_list = sess.run(embedding, feed_dict={image_batch: img_np})
+    save_numpy_to_dir(train_save_dir, emb_list, labels_truth, reader.get_idx_to_class())
 
-    feed_dict = {step_ph : step, image_batch: img_np, labels_batch: labels_truth}
-
-    step_loss = 0
-    for it in range(args.iter_size):
-      # Update summary periodically.
-      if it == args.iter_size-1 and step % args.update_tb_every == 0:
-        sess_outs = [classify_loss, train_op]
-        loss_value, _ = sess.run(sess_outs,
-                                          feed_dict=feed_dict)
-        # summary_writer.add_summary(summary, step)
-      else:
-        sess_outs = [classify_loss, train_op, train_acc]
-        loss_value, _, train_acc_v = sess.run(sess_outs, feed_dict=feed_dict)
-        print(train_acc_v)
-
-      step_loss += loss_value
-
-    step_loss /= args.iter_size
-
-    lr = sess.run(learning_rate, feed_dict=feed_dict)
-
-    # Save trained model periodically.
-    if step % args.save_pred_every == 0 and step > 0:
-      save(saver, sess, args.snapshot_dir, step)
+    if curr_class_name_tmp != curr_class_name:
+      curr_class_name_tmp = curr_class_name
+      print(curr_class_name)
 
     duration = time.time() - start_time
-    desc = 'loss = {:.3f}, lr = {:.6f}'.format(step_loss, lr)
-    pbar.set_description(desc)
-
-
+    # desc = 'loss = {:.3f}, lr = {:.6f}'.format(step_loss, lr)
+    # pbar.set_description(desc)
   
-
   coord.request_stop()
   coord.join(threads)
     

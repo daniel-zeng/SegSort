@@ -136,7 +136,7 @@ def main():
   label_input = tf.placeholder(
       tf.int32, shape=[1, None, None, 1])
   embedding_input = tf.placeholder(
-      tf.float32, shape=[1, None, None, args.embedding_dim])
+      tf.float32, shape=[1, None, None, args.embedding_dim]) #only 1 embedding (aka 1 image)
   embedding = common_utils.normalize_embedding(embedding_input)
   loc_feature = tf.placeholder(
       tf.float32, shape=[1, None, None, 2])
