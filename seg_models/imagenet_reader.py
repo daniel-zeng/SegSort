@@ -61,7 +61,8 @@ class ImageNetReader(object):
     self.train_dataset = ImageFolderInstance(
       data_dir,
       transforms.Compose([
-        transforms.RandomResizedCrop(input_size, scale=(0.8,1.)),
+        transforms.RandomResizedCrop(input_size, 
+          scale=(1.,1.),ratio=(0.9, 1.1)),
         
         #don't data-augment for now
         # transforms.RandomResizedCrop(input_size, scale=(0.2,1.)),

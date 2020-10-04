@@ -12,10 +12,11 @@
 #tw: large epochs, 256 batch size
 
 
-BATCH_SIZE=16
+BATCH_SIZE=64
 TRAIN_INPUT_SIZE=480,480
 NUM_CLASSES=1000
 NUM_GPU=2
+NUM_LOADING_WORKERS=25
 
 # Set up SegSort hyper-parameters.
 EMBEDDING_DIM=32
@@ -25,7 +26,6 @@ SNAPSHOT_DIR=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k
 
 # Set up the procedure pipeline.
 IS_EXTRACT_1=1
-
 
 
 # Update PYTHONPATH.
@@ -39,7 +39,7 @@ DATAROOT_IMGNET=/home/public/public_dataset/ILSVRC2014/Img/
 # Run unsup_segsort.sh before this to get checkpoint model
 if [ ${IS_EXTRACT_1} -eq 1 ]; then
   python3 pyscripts/inference/extract_embeddings.py\
-    --save_dir ${SNAPSHOT_DIR}/embeddings\
+    --save_dir ${SNAPSHOT_DIR}/embeddings2\
     --snapshot_dir ${SNAPSHOT_DIR}/stage2\
     --restore_from ${SNAPSHOT_DIR}/stage1/model.ckpt-10000\
     --data_dir ${DATAROOT_IMGNET}\
@@ -47,6 +47,7 @@ if [ ${IS_EXTRACT_1} -eq 1 ]; then
     --use_global_status\
     --input_size ${TRAIN_INPUT_SIZE}\
     --num_classes ${NUM_CLASSES}\
+    --num_loading_workers ${NUM_LOADING_WORKERS}\
     --num_gpu ${NUM_GPU}\
     --embedding_dim ${EMBEDDING_DIM}\
     --is_training

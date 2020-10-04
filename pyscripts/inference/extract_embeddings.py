@@ -51,6 +51,8 @@ def get_arguments():
   
   parser.add_argument('--num_classes', type=int, default=1000,
                       help='Number of classes to predict.')
+  parser.add_argument('--num_loading_workers', type=int, default=10,
+                      help='Number of workers to load imagenet.')
   
   # parser.add_argument('--random_mirror', action='store_true',
   #                     help='Whether to randomly mirror the inputs.')
@@ -180,7 +182,8 @@ def main():
   # current step
   step_ph = tf.placeholder(dtype=tf.float32, shape=())
 
-  reader = ImageNetReader(args.data_dir + "train/", args.batch_size, h, 10, False)
+  reader = ImageNetReader(args.data_dir + "train/", args.batch_size, 
+    h, args.num_loading_workers, False)
 
   #num batches: 20019 * 64 = 1281216 (close enough, batch is overest.)
 
@@ -239,12 +242,25 @@ def main():
     start_time = time.time()
 
     img_np, labels_truth = reader.dequeue()    
+
+    timeA = time.time() - start_time
+    start_time = time.time()
+
     emb_list = sess.run(embedding, feed_dict={image_batch: img_np})
+
+    timeB = time.time() - start_time
+    start_time = time.time()
+
     save_numpy_to_dir(train_save_dir, emb_list, labels_truth, reader.get_idx_to_class())
+
+    timeC = time.time() - start_time
+    start_time = time.time()
 
     if curr_class_name_tmp != curr_class_name:
       curr_class_name_tmp = curr_class_name
       print(curr_class_name)
+
+    print(timeA, timeB, timeC)
 
     duration = time.time() - start_time
     # desc = 'loss = {:.3f}, lr = {:.6f}'.format(step_loss, lr)
