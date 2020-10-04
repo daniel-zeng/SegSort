@@ -7,6 +7,7 @@ import math
 import os
 import time
 import utils.general
+from utils.logger import Logger
 
 
 import numpy as np
@@ -20,6 +21,7 @@ import torchvision.transforms as transforms
 from seg_models.imagenet_embed_reader import ImageNetEmbedReader
 from tqdm import tqdm
 
+import random
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import pdb 
@@ -57,7 +59,7 @@ def get_arguments():
                       help='Regularisation parameter for L2-loss.')
   parser.add_argument('--num_classes', type=int, default=1000,
                       help='Number of classes to predict.')
-  parser.add_argument('--num_steps', type=int, default=20000,
+  parser.add_argument('--num_epochs', type=int, default=300,
                       help='Number of training steps.')
   parser.add_argument('--iter_size', type=int, default=10,
                       help='Number of iteration to update weights')
@@ -69,13 +71,17 @@ def get_arguments():
                       help='Whether to randomly scale the inputs.')
   parser.add_argument('--num_loading_workers', type=int, default=10,
                       help='Number of workers to load imagenet.')
+  parser.add_argument('--schedule', type=int, nargs='+', default=[150, 225],
+                        help='Decrease learning rate at these epochs.')
+  parser.add_argument('--gamma', type=float, default=0.1, help='LR is multiplied by gamma on schedule.')
+
   # SegSort parameters.
   parser.add_argument('--embedding_dim', type=int, default=32,
                       help='Dimension of the feature embeddings.')
   
   # Misc paramters.
   parser.add_argument('--restore_from', type=str, default='',
-                      help='Where restore model parameters from.')
+                      help='Where restore checkpoint/model parameters from.')
   parser.add_argument('--save_pred_every', type=int, default=10000,
                       help='Save summaries and checkpoint every often.')
   parser.add_argument('--update_tb_every', type=int, default=20,
@@ -88,22 +94,16 @@ def get_arguments():
   return parser.parse_args()
 
 
-def save(saver, sess, logdir, step):
-  """Save the trained weights.
-   
-  Args:
-    saver: TensorFlow Saver object.
-    sess: TensorFlow session.
-    logdir: path to the snapshots directory.
-    step: current training step.
-  """
-  model_name = 'model.ckpt'
-  checkpoint_path = os.path.join(logdir, model_name)
-    
-  if not os.path.exists(logdir):
-    os.makedirs(logdir)
-  saver.save(sess, checkpoint_path, global_step=step)
-  print('The checkpoint has been created.')
+def save_checkpoint(state, snapshot_dir, filename='checkpoint.pth.tar'):
+    filepath = os.path.join(snapshot_dir, filename)
+    torch.save(state, filepath)
+
+def adjust_learning_rate(lr, optimizer, epoch, schedule):
+  if epoch in schedule:
+      lr *= args.gamma
+      for param_group in optimizer.param_groups:
+        param_group['lr'] = lr
+  return lr
 
 class SimpleNet(nn.Module):
     def __init__(self, h, input_size, output_size, pool="max"):
@@ -133,16 +133,22 @@ def main():
 
   # Read CL arguments and snapshot the arguments into text file.
   args = get_arguments()
+  torch.manual_seed(args.random_seed)
+  torch.cuda.manual_seed_all(args.random_seed)
+  np.random.seed(args.random_seed)
+  random.seed(args.random_seed)
+
   utils.general.snapshot_arg(args)
     
   # # The segmentation network is stride 8 by default.
   h, w = map(int, args.input_size.split(','))
   input_size = (h, w)
     
+    
   # Create Data Reader
-  reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
+  train_reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
     args.batch_size, h, args.num_loading_workers, True)
-  print("Total Imgs: {}, Num Batches: {}".format(reader.total_imgs, reader.num_batches))
+  print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
 
   # a = reader.dequeue()
   # returns a[0] = torch.Size([256, 60, 60, 32])
@@ -156,9 +162,10 @@ def main():
   # compute accuracy
   # need to save model periodically
   # weight decay
+  # scheduled loss
 
   # now:
-  # create scheduled loss
+  # similar to bearpaw - add checkpointing and specific train fxn
   
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -166,29 +173,61 @@ def main():
   if torch.cuda.device_count() > 1:
     print("Using", torch.cuda.device_count(), "GPUs")
     # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
-    model = nn.DataParallel(model)
-  model.to(device) 
-
-  if args.restore_from is not None and len(args.restore_from) > 0:
-    model.load_state_dict(torch.load(args.restore_from))
-    model.eval()
-
-  loss_fn = nn.CrossEntropyLoss()
+    # model = nn.parallel.DistributedDataParallel(model) # not sure how to use this
+    model = nn.DataParallel(model) 
+  model.to(device)
+  
+  lr = args.learning_rate
+  loss_fn = nn.CrossEntropyLoss().cuda()
   optimer = optim.Adam(model.parameters(), 
     lr = args.learning_rate, weight_decay = args.weight_decay)
 
-  pbar = tqdm(range(args.num_steps))
-  epoch = 0
-  for step in pbar:
-    start_time = time.time()
-    
-    try:
-      embeds, labels = reader.dequeue()
-    except StopIteration as e:
-      reader.reset()
-      epoch += 1
-      embeds, labels = reader.dequeue()   
+  start_epoch = 0
+  if args.restore_from is not None and len(args.restore_from) > 0:
+    # Load checkpoint.
+    print('Resuming from checkpoint...')
+    assert os.path.isfile(args.restore_from), 'Error: no checkpoint directory found!'
+    checkpoint_dir = os.path.dirname(args.restore_from)
+    checkpoint = torch.load(args.restore_from)
+    best_acc = checkpoint['best_acc']
+    start_epoch = checkpoint['epoch']
+    model.load_state_dict(checkpoint['state_dict'])
+    optimer.load_state_dict(checkpoint['optimizer_dict'])
+    logger = Logger(os.path.join(args.checkpoint_dir, 'log.txt'), resume=True)
+  else:
+    logger = Logger(os.path.join(args.snapshot_dir, 'log.txt'))
+    logger.set_names(['Learning Rate', 'Train Loss', 'Valid Loss', 'Train Acc.', 'Valid Acc.'])
 
+
+  best_acc = 0
+  for epoch in range(start_epoch, args.num_epochs):
+    lr = adjust_learning_rate(lr, optimer, epoch, args.schedule)
+
+    print('\nEpoch: [%d | %d] LR: %f' % (epoch + 1, args.num_epochs, lr))
+    tr_loss, tr_acc = train(train_reader, model, loss_fn, optimer, epoch, lr, device)
+    best_acc = max(best_acc, tr_acc)
+
+    if epoch * args.save_pred_every == 0 and epoch > 0:
+      save_checkpoint({
+          'epoch': epoch + 1,
+          'state_dict': model.state_dict(),
+          'acc': tr_acc,
+          'best_acc': best_acc,
+          'optimizer_dict' : optimizer.state_dict(),
+      }, args.snapshot_dir)
+
+  #num supposed images: 1281167
+  #num batches: 20019 * 64 = 128121 6(close enough, batch is overest.)
+
+
+def train(reader, model, loss_fn, optimer, epoch, lr, device): #one epoch
+  loss = acc = 0
+  pbar = tqdm(reader.loader)
+  for i, data in enumerate(pbar):
+    start_time = time.time()
+
+    embeds, labels = data
+    
     embeds.requires_grad = False
     labels.requires_grad = False
     embeds = embeds.to(device)
@@ -206,17 +245,12 @@ def main():
     # pdb.set_trace()
     acc = (max_index == labels).double().mean().item()
 
-    if step * args.save_pred_every == 0 and step > 0:
-      save_path = os.path.join(args.snapshot_dir, "checkpoint.pth.tar")
-      torch.save(model.state_dict(), save_path)
-
     duration = time.time() - start_time
-    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}'.format(loss, args.learning_rate, acc, epoch)
+    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}'.format(loss, lr, acc, epoch)
     pbar.set_description(desc)
 
+  return loss, acc
 
-  #num supposed images: 1281167
-  #num batches: 20019 * 64 = 128121 6(close enough, batch is overest.)
-    
+
 if __name__ == '__main__':
   main()

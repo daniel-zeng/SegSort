@@ -35,16 +35,16 @@ class ImageNetEmbedReader(object):
     self.dataset_folder = NumpyFolder(data_dir)
 
 
-    self.train_loader = tudata.DataLoader(
+    self.loader = tudata.DataLoader(
       self.dataset_folder, 
       batch_size=batch_size, shuffle=shuffle,
       num_workers=num_workers, pin_memory=True
     )
 
-    self.num_batches = len(self.train_loader)
-    self.total_imgs = len(self.train_loader.sampler)
+    self.num_batches = len(self.loader)
+    self.total_imgs = len(self.loader.sampler)
     
-    self.iter = iter(self.train_loader) # Should return torch Tensor pinned in cuda memory
+    self.iter = iter(self.loader) # Should return torch Tensor pinned in cuda memory
 
     # i = 0
     # while True:
@@ -60,4 +60,4 @@ class ImageNetEmbedReader(object):
     return next(self.iter)
 
   def reset(self):
-    self.iter = iter(self.train_loader)
+    self.iter = iter(self.loader)

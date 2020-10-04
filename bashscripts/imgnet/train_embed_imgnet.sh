@@ -15,10 +15,10 @@ BATCH_SIZE=256
 TRAIN_INPUT_SIZE=60,60
 WEIGHT_DECAY=5e-4
 ITER_SIZE=1
-NUM_STEPS1=10000
+NUM_EPOCHS1=300
 NUM_CLASSES=1000
 NUM_GPU=2
-LEARNING_RATE=0.08
+LEARNING_RATE=0.1
 NUM_LOADING_WORKERS=5
 
 # Set up parameters for inference.
@@ -38,7 +38,7 @@ SNAPSHOT_DIR=snapshots/imgnet/unsup_embed/unsup_embed_lr1e-1_it10k
 IS_TRAIN_INET_1=1
 
 # Set up the data directory.
-DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeddings2
+DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeds
 
 # Update PYTHONPATH.
 export PYTHONPATH=`pwd`:$PYTHONPATH
@@ -55,7 +55,7 @@ if [ ${IS_TRAIN_INET_1} -eq 1 ]; then
         --data_dir ${DATAROOT_EMBED}\
         --batch_size ${BATCH_SIZE}\
         --snapshot_dir ${SNAPSHOT_DIR}/stage1\
-        --save_pred_every $(($NUM_STEPS1/4))\
+        --save_pred_every $(($NUM_EPOCHS1/4))\
         --update_tb_every 50\
         --use_global_status\
         --input_size ${TRAIN_INPUT_SIZE}\
@@ -63,7 +63,7 @@ if [ ${IS_TRAIN_INET_1} -eq 1 ]; then
         --weight_decay ${WEIGHT_DECAY}\
         --iter_size ${ITER_SIZE}\
         --num_classes ${NUM_CLASSES}\
-        --num_steps $(($NUM_STEPS1+1))\
+        --num_epochs $(($NUM_EPOCHS1+1))\
         --num_gpu ${NUM_GPU}\
         --embedding_dim ${EMBEDDING_DIM}\
         --random_mirror\
