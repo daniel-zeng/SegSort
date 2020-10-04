@@ -127,7 +127,7 @@ class SimpleNet(nn.Module):
       return out
 
 def main():
-  print("IMG_NET")
+  print("IMG_NET EMBED TRAIN")
 
   """Create the model and start the training."""
 
@@ -138,24 +138,27 @@ def main():
   # # The segmentation network is stride 8 by default.
   h, w = map(int, args.input_size.split(','))
   input_size = (h, w)
-     
+    
+  # Create Data Reader
   reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
     args.batch_size, h, args.num_loading_workers, True)
   print("Total Imgs: {}, Num Batches: {}".format(reader.total_imgs, reader.num_batches))
 
   # a = reader.dequeue()
-  #returns a[0] = torch.Size([256, 60, 60, 32])
-  #        a[1] = torch.Size([256])
+  # returns a[0] = torch.Size([256, 60, 60, 32])
+  #         a[1] = torch.Size([256])
   # however, norm of last dim is not 1, can be like 5
 
-
+  # done:
   # build the rest of the pipeline!
   # simple linear model
   # have the labels
   # compute accuracy
+  # need to save model periodically
 
   # now:
-  # need to save model periodically
+  # create scheduled loss
+  # weight decay?
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
   model = SimpleNet(h, args.embedding_dim, args.num_classes, 'max')
@@ -165,8 +168,13 @@ def main():
     model = nn.DataParallel(model)
   model.to(device) 
 
+  if args.restore_from is not None and len(args.restore_from) > 0:
+    model.load_state_dict(torch.load(args.restore_from))
+    model.eval()
+
   loss_fn = nn.CrossEntropyLoss()
-  optimer = optim.Adam(model.parameters(), args.learning_rate)
+  optimer = optim.Adam(model.parameters(), 
+    lr = args.learning_rate, weight_decay = args.weight_decay)
 
   pbar = tqdm(range(args.num_steps))
   epoch = 0
@@ -196,6 +204,10 @@ def main():
     max_index = torch.argmax(y_pred, dim = 1)
     # pdb.set_trace()
     acc = (max_index == labels).double().mean().item()
+
+    if step * args.save_pred_every == 0 and step > 0:
+      save_path = os.path.join(args.snapshot_dir, "checkpoint.pth.tar")
+      torch.save(model.state_dict(), save_path)
 
     duration = time.time() - start_time
     desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}'.format(loss, args.learning_rate, acc, epoch)

@@ -55,7 +55,7 @@ if [ ${IS_TRAIN_INET_1} -eq 1 ]; then
         --data_dir ${DATAROOT_EMBED}\
         --batch_size ${BATCH_SIZE}\
         --snapshot_dir ${SNAPSHOT_DIR}/stage1\
-        --save_pred_every 10000\
+        --save_pred_every $(($NUM_STEPS1/4))\
         --update_tb_every 50\
         --use_global_status\
         --input_size ${TRAIN_INPUT_SIZE}\
