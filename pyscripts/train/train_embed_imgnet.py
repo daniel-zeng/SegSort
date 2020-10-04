@@ -155,10 +155,11 @@ def main():
   # have the labels
   # compute accuracy
   # need to save model periodically
+  # weight decay
 
   # now:
   # create scheduled loss
-  # weight decay?
+  
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
   model = SimpleNet(h, args.embedding_dim, args.num_classes, 'max')
