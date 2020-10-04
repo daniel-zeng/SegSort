@@ -18,7 +18,7 @@ ITER_SIZE=1
 NUM_STEPS1=10000
 NUM_CLASSES=1000
 NUM_GPU=2
-LEARNING_RATE=1e-1
+LEARNING_RATE=0.08
 NUM_LOADING_WORKERS=5
 
 # Set up parameters for inference.
@@ -38,7 +38,7 @@ SNAPSHOT_DIR=snapshots/imgnet/unsup_embed/unsup_embed_lr1e-1_it10k
 IS_TRAIN_INET_1=1
 
 # Set up the data directory.
-DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeddings
+DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeddings2
 
 # Update PYTHONPATH.
 export PYTHONPATH=`pwd`:$PYTHONPATH

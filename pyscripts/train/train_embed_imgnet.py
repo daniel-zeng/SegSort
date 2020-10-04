@@ -12,6 +12,7 @@ import utils.general
 import numpy as np
 
 import torch
+import torch.nn as nn
 from torch.nn import functional as F
 from torch import optim
 import torchvision.transforms as transforms
@@ -106,16 +107,23 @@ def save(saver, sess, logdir, step):
 
 class SimpleNet(nn.Module):
     def __init__(self, h, input_size, output_size, pool="max"):
-        super(Net, self).__init__()
+        super(SimpleNet, self).__init__()
         self.pool = nn.MaxPool2d(h, stride=h) \
           if pool == 'max' else nn.AvgPool2d(h, stride=h)
-        self.fc1 = nn.Linear(input, output_size)
+        self.fc1 = nn.Linear(input_size, output_size)
 
     def forward(self, x):
-      out = self.pool(x)  
+      # print(x.size())
+      out = x.permute(0, 3, 1, 2) #nhwc to nchw
+      # print(out.size())
+      out = self.pool(out) 
+      out = torch.flatten(out, start_dim = 1)
+      # print(out.size())
+      # out = torch.max(x, (2, 3)) # Max pooling
       out = self.fc1(out)
-      print("\tIn Model: input size", x.size(),
-              "output size", out.size())
+
+      # print("\tIn Model: input size", x.size(), # splits by batch size, sanity check works
+      #         "output size", out.size())
       return out
 
 def main():
@@ -132,8 +140,9 @@ def main():
   input_size = (h, w)
      
   reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
-    args.batch_size, h, args.num_loading_workers, False)
-  
+    args.batch_size, h, args.num_loading_workers, True)
+  print("Total Imgs: {}, Num Batches: {}".format(reader.total_imgs, reader.num_batches))
+
   # a = reader.dequeue()
   #returns a[0] = torch.Size([256, 60, 60, 32])
   #        a[1] = torch.Size([256])
@@ -142,34 +151,59 @@ def main():
 
   # build the rest of the pipeline!
   # simple linear model
-  # you have the labels
+  # have the labels
+  # compute accuracy
+
+  # now:
+  # need to save model periodically
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-  model = SimpleNet(args.embedding_dim, args.num_classes)
+  model = SimpleNet(h, args.embedding_dim, args.num_classes, 'max')
   if torch.cuda.device_count() > 1:
-    print("Using ", torch.cuda.device_count(), "GPUs")
+    print("Using", torch.cuda.device_count(), "GPUs")
     # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
     model = nn.DataParallel(model)
   model.to(device) 
 
   loss_fn = nn.CrossEntropyLoss()
+  optimer = optim.Adam(model.parameters(), args.learning_rate)
 
-  while args.num_iters:
+  pbar = tqdm(range(args.num_steps))
+  epoch = 0
+  for step in pbar:
+    start_time = time.time()
+    
+    try:
+      embeds, labels = reader.dequeue()
+    except StopIteration as e:
+      reader.reset()
+      epoch += 1
+      embeds, labels = reader.dequeue()   
 
-    embeds, labels = reader.dequeue()
     embeds.requires_grad = False
     labels.requires_grad = False
-    pred = snet(embeds)
+    embeds = embeds.to(device)
+    labels = labels.to(device)
+    y_pred = model(embeds)
     #should be [batch x 1000]
 
-    loss = loss_fn(preds, labels)
+    loss = loss_fn(y_pred, labels)
     
-    optim.zero_grad()
+    optimer.zero_grad()
     loss.backward()
-    optim.step()
+    optimer.step()
+
+    max_index = torch.argmax(y_pred, dim = 1)
+    # pdb.set_trace()
+    acc = (max_index == labels).double().mean().item()
+
+    duration = time.time() - start_time
+    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}'.format(loss, args.learning_rate, acc, epoch)
+    pbar.set_description(desc)
+
 
   #num supposed images: 1281167
-  #num batches: 20019 * 64 = 1281216 (close enough, batch is overest.)
+  #num batches: 20019 * 64 = 128121 6(close enough, batch is overest.)
     
 if __name__ == '__main__':
   main()

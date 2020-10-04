@@ -46,8 +46,6 @@ class ImageNetEmbedReader(object):
     
     self.iter = iter(self.train_loader) # Should return torch Tensor pinned in cuda memory
 
-    print(self.total_imgs, self.num_batches)
-
     # i = 0
     # while True:
     #   img, lab = self.dequeue()
@@ -60,3 +58,6 @@ class ImageNetEmbedReader(object):
     
   def dequeue(self):
     return next(self.iter)
+
+  def reset(self):
+    self.iter = iter(self.train_loader)
