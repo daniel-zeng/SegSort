@@ -39,7 +39,7 @@ DATAROOT_IMGNET=/home/public/public_dataset/ILSVRC2014/Img/
 # Run unsup_segsort.sh before this to get checkpoint model
 if [ ${IS_EXTRACT_1} -eq 1 ]; then
   python3 pyscripts/inference/extract_embeddings.py\
-    --save_dir ${SNAPSHOT_DIR}/embeddings2\
+    --save_dir ${SNAPSHOT_DIR}/embeds\
     --snapshot_dir ${SNAPSHOT_DIR}/stage2\
     --restore_from ${SNAPSHOT_DIR}/stage1/model.ckpt-10000\
     --data_dir ${DATAROOT_IMGNET}\

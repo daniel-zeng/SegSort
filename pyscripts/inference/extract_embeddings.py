@@ -128,7 +128,7 @@ def img_loader_sanity(reader):
 
 curr_class_name = ""
 curr_idx = 0
-def save_numpy_to_dir(save_dir, numpy_list, label_list, idx_to_class):
+def save_numpy_to_dir(save_dir, numpy_list, label_list, idx_to_class, last_batch_dim = None):
     # print(len(numpy_list))
     # print(type(numpy_list[0]))
     # print(numpy_list[0].shape)
@@ -139,6 +139,9 @@ def save_numpy_to_dir(save_dir, numpy_list, label_list, idx_to_class):
     #store prev class name
     #if different, create 
     for idx, label in enumerate(label_list):
+      if last_batch_dim is not None and idx >= last_batch_dim:
+        break
+
       class_name = idx_to_class[label]
 
       save_folder = os.path.join(save_dir, curr_class_name)
@@ -157,6 +160,16 @@ def save_numpy_to_dir(save_dir, numpy_list, label_list, idx_to_class):
 
       curr_idx += 1
   
+def handle_last_batch(img_np, labels_truth, batch_size)
+  last_batch_dim = img_np.shape[0]
+  tmp = list(img_np.shape)
+  tmp[0] = batch_size - last_batch_dim
+  padding = np.zeros(tmp)
+  padding_l = np.zeros(tmp[0])
+  img_np = np.concatenate((img_np, padding), axis=0)
+  labels_truth = np.concatenate((labels_truth, padding_l), axis=0)
+
+  return img_np, labels_truth, last_batch_dim
 
 def main():
   print("IMG_NET extracting embeddings")
@@ -182,7 +195,7 @@ def main():
   # current step
   step_ph = tf.placeholder(dtype=tf.float32, shape=())
 
-  reader = ImageNetReader(args.data_dir + "train/", args.batch_size, 
+  reader = ImageNetReader(os.path.join(args.data_dir, "train"), args.batch_size, 
     h, args.num_loading_workers, False)
 
   #num batches: 20019 * 64 = 1281216 (close enough, batch is overest.)
@@ -236,12 +249,19 @@ def main():
   print(reader.num_batches)
   #num supposed images: 1281167
 
-  train_save_dir = os.path.join(args.save_dir, "train")
+  train_save_dir = os.path.join(args.save_dir, "train", args.embedding_dim)
   curr_class_name_tmp = curr_class_name
   for step in pbar:
     start_time = time.time()
 
-    img_np, labels_truth = reader.dequeue()    
+    img_np, labels_truth = reader.dequeue()
+
+    #Handle last batch case
+    last_batch_dim = None
+    if img_np.shape[0] < args.batch_size:
+      #last batch
+      img_np, labels_truth, last_batch_dim = handle_last_batch(img_np, labels_truth, args.batch_size)
+      
 
     timeA = time.time() - start_time
     start_time = time.time()
@@ -251,7 +271,8 @@ def main():
     timeB = time.time() - start_time
     start_time = time.time()
 
-    save_numpy_to_dir(train_save_dir, emb_list, labels_truth, reader.get_idx_to_class())
+    save_numpy_to_dir(train_save_dir, emb_list, 
+      labels_truth, reader.get_idx_to_class(), last_batch_dim)
 
     timeC = time.time() - start_time
     start_time = time.time()

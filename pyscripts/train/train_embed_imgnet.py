@@ -61,8 +61,8 @@ def get_arguments():
                       help='Number of classes to predict.')
   parser.add_argument('--num_epochs', type=int, default=300,
                       help='Number of training steps.')
-  parser.add_argument('--iter_size', type=int, default=10,
-                      help='Number of iteration to update weights')
+  # parser.add_argument('--iter_size', type=int, default=10,
+  #                     help='Number of iteration to update weights')
   parser.add_argument('--random_mirror', action='store_true',
                       help='Whether to randomly mirror the inputs.')
   parser.add_argument('--random_crop', action='store_true',
@@ -106,11 +106,33 @@ def adjust_learning_rate(lr, optimizer, epoch, schedule):
   return lr
 
 class SimpleNet(nn.Module):
-    def __init__(self, h, input_size, output_size, pool="max"):
+    def __init__(self, width, input_size, output_size, pool="max"):
         super(SimpleNet, self).__init__()
-        self.pool = nn.MaxPool2d(h, stride=h) \
-          if pool == 'max' else nn.AvgPool2d(h, stride=h)
+        self.pool = nn.MaxPool2d(width, stride=width) \
+          if pool == 'max' else nn.AvgPool2d(width, stride=width)
         self.fc1 = nn.Linear(input_size, output_size)
+
+    def forward(self, x):
+      # print(x.size())
+      out = x.permute(0, 3, 1, 2) #nhwc to nchw
+      # print(out.size())
+      out = self.pool(out) 
+      out = torch.flatten(out, start_dim = 1)
+      # print(out.size())
+      # out = torch.max(x, (2, 3)) # Max pooling
+      out = self.fc1(out)
+
+      # print("\tIn Model: input size", x.size(), # splits by batch size, sanity check works
+      #         "output size", out.size())
+      return out
+
+class SimpleNet2(nn.Module):
+    def __init__(self, width, embed_size, output_size, pool="max"):
+        super(SimpleNet2, self).__init__()
+        p_width = width//6
+        self.pool = nn.MaxPool2d(p_width, stride=p_width) \
+          if pool == 'max' else nn.AvgPool2d(p_width, stride=p_width)
+        self.fc1 = nn.Linear(36 * embed_size, output_size)
 
     def forward(self, x):
       # print(x.size())
@@ -150,6 +172,9 @@ def main():
     args.batch_size, h, args.num_loading_workers, True)
   print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
 
+  #num supposed images: 1281167
+  #num batches: 2503 * 512 = 1281536 (close enough, batch is overest.)
+
   # a = reader.dequeue()
   # returns a[0] = torch.Size([256, 60, 60, 32])
   #         a[1] = torch.Size([256])
@@ -169,7 +194,7 @@ def main():
   
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-  model = SimpleNet(h, args.embedding_dim, args.num_classes, 'max')
+  model = SimpleNet2(w, args.embedding_dim, args.num_classes, 'avg')
   if torch.cuda.device_count() > 1:
     print("Using", torch.cuda.device_count(), "GPUs")
     # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
@@ -196,7 +221,7 @@ def main():
     logger = Logger(os.path.join(args.checkpoint_dir, 'log.txt'), resume=True)
   else:
     logger = Logger(os.path.join(args.snapshot_dir, 'log.txt'))
-    logger.set_names(['Learning Rate', 'Train Loss', 'Valid Loss', 'Train Acc.', 'Valid Acc.'])
+    logger.set_names(['Learning Rate', 'Train Loss', 'Train Acc.'])
 
 
   best_acc = 0
@@ -207,6 +232,8 @@ def main():
     tr_loss, tr_acc = train(train_reader, model, loss_fn, optimer, epoch, lr, device)
     best_acc = max(best_acc, tr_acc)
 
+    logger.append([lr, tr_loss, tr_acc])
+
     if epoch * args.save_pred_every == 0 and epoch > 0:
       save_checkpoint({
           'epoch': epoch + 1,
@@ -216,14 +243,10 @@ def main():
           'optimizer_dict' : optimizer.state_dict(),
       }, args.snapshot_dir)
 
-  #num supposed images: 1281167
-  #num batches: 20019 * 64 = 128121 6(close enough, batch is overest.)
-
 
 def train(reader, model, loss_fn, optimer, epoch, lr, device): #one epoch
   loss = acc = 0
-  pbar = tqdm(reader.loader)
-  for i, data in enumerate(pbar):
+  for i, data in enumerate(reader.loader):
     start_time = time.time()
 
     embeds, labels = data
@@ -246,8 +269,8 @@ def train(reader, model, loss_fn, optimer, epoch, lr, device): #one epoch
     acc = (max_index == labels).double().mean().item()
 
     duration = time.time() - start_time
-    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}'.format(loss, lr, acc, epoch)
-    pbar.set_description(desc)
+    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}, dur = {:.2f}s/it, [{}/{}]'.format(loss, lr, acc, epoch, duration, i, reader.num_batches)
+    print(desc)
 
   return loss, acc
 

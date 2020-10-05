@@ -14,7 +14,6 @@
 BATCH_SIZE=256
 TRAIN_INPUT_SIZE=60,60
 WEIGHT_DECAY=5e-4
-ITER_SIZE=1
 NUM_EPOCHS1=300
 NUM_CLASSES=1000
 NUM_GPU=2
@@ -51,7 +50,7 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 #qq: this should be defined right
 # dang: all the spaces after the \ caused args not to parse correctly
 if [ ${IS_TRAIN_INET_1} -eq 1 ]; then
-  python3 pyscripts/train/train_embed_imgnet.py\
+  python3 -u pyscripts/train/train_embed_imgnet.py\
         --data_dir ${DATAROOT_EMBED}\
         --batch_size ${BATCH_SIZE}\
         --snapshot_dir ${SNAPSHOT_DIR}/stage1\
@@ -61,7 +60,6 @@ if [ ${IS_TRAIN_INET_1} -eq 1 ]; then
         --input_size ${TRAIN_INPUT_SIZE}\
         --learning_rate ${LEARNING_RATE}\
         --weight_decay ${WEIGHT_DECAY}\
-        --iter_size ${ITER_SIZE}\
         --num_classes ${NUM_CLASSES}\
         --num_epochs $(($NUM_EPOCHS1+1))\
         --num_gpu ${NUM_GPU}\
