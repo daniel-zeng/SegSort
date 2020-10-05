@@ -17,6 +17,7 @@ import torch.nn as nn
 from torch.nn import functional as F
 from torch import optim
 import torchvision.transforms as transforms
+import torch.utils.data as tud
 
 from seg_models.imagenet_embed_reader import ImageNetEmbedReader
 from tqdm import tqdm
@@ -25,6 +26,10 @@ import random
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import pdb 
+
+import sys
+sys.path.append('/home/dz/lemniscate.pytorch')
+from lib.NCEAverage import NCEAverage
 
 def get_arguments():
   """Parse all the arguments provided from the CLI.
@@ -36,6 +41,8 @@ def get_arguments():
   # Data parameters.
   parser.add_argument('--batch_size', type=int, default=1,
                       help='Number of images in one step.')
+  parser.add_argument('--use_lemniscate', type=str, default='',
+                      help='Path to lemniscate embeddings.')
   parser.add_argument('--data_dir', type=str, default='',
                       help='/path/to/dataset/.')
   parser.add_argument('--input_size', type=str, default='336,336',
@@ -71,7 +78,7 @@ def get_arguments():
                       help='Whether to randomly scale the inputs.')
   parser.add_argument('--num_loading_workers', type=int, default=10,
                       help='Number of workers to load imagenet.')
-  parser.add_argument('--schedule', type=int, nargs='+', default=[150, 225],
+  parser.add_argument('--schedule', type=int, nargs='+', default=[70, 140],
                         help='Decrease learning rate at these epochs.')
   parser.add_argument('--gamma', type=float, default=0.1, help='LR is multiplied by gamma on schedule.')
 
@@ -106,51 +113,74 @@ def adjust_learning_rate(lr, optimizer, epoch, schedule):
   return lr
 
 class SimpleNet(nn.Module):
-    # [batch_size x 60 x 60 x 32] -> [batch_size x 1 x 1 x 32] ->
-    # [batch_size x 1000] (has dimension reduction in middle)
-    def __init__(self, width, input_size, output_size, pool="max"):
-        super(SimpleNet, self).__init__()
-        self.pool = nn.MaxPool2d(width, stride=width) \
-          if pool == 'max' else nn.AvgPool2d(width, stride=width)
-        self.fc1 = nn.Linear(input_size, output_size)
+  # [batch_size x 60 x 60 x 32] -> [batch_size x 1 x 1 x 32] ->
+  # [batch_size x 1000] (has dimension reduction in middle)
+  def __init__(self, width, input_size, output_size, pool="max"):
+    super(SimpleNet, self).__init__()
+    self.pool = nn.MaxPool2d(width, stride=width) \
+      if pool == 'max' else nn.AvgPool2d(width, stride=width)
+    self.fc1 = nn.Linear(input_size, output_size)
 
-    def forward(self, x):
-      # print(x.size())
-      out = x.permute(0, 3, 1, 2) #nhwc to nchw
-      # print(out.size())
-      out = self.pool(out) 
-      out = torch.flatten(out, start_dim = 1)
-      # print(out.size())
-      # out = torch.max(x, (2, 3)) # Max pooling
-      out = self.fc1(out)
+  def forward(self, x):
+    # print(x.size())
+    out = x.permute(0, 3, 1, 2) #nhwc to nchw
+    # print(out.size())
+    out = self.pool(out) 
+    out = torch.flatten(out, start_dim = 1)
+    # print(out.size())
+    # out = torch.max(x, (2, 3)) # Max pooling
+    out = self.fc1(out)
 
-      # print("\tIn Model: input size", x.size(), # splits by batch size, sanity check works
-      #         "output size", out.size())
-      return out
+    # print("\tIn Model: input size", x.size(), # splits by batch size, sanity check works
+    #         "output size", out.size())
+    return out
 
 class SimpleNet2(nn.Module):
-    # [batch_size x 60 x 60 x 32] -> [batch_size x 6 x 6 x 32] ->
-    # [batch_size x 1152] -> [batch_size x 1000]
-    def __init__(self, width, embed_size, output_size, pool="max"):
-        super(SimpleNet2, self).__init__()
-        p_width = width//6
-        self.pool = nn.MaxPool2d(p_width, stride=p_width) \
-          if pool == 'max' else nn.AvgPool2d(p_width, stride=p_width)
-        self.fc1 = nn.Linear(36 * embed_size, output_size)
+  # [batch_size x 60 x 60 x 32] -> [batch_size x 6 x 6 x 32] ->
+  # [batch_size x 1152] -> [batch_size x 1000]
+  def __init__(self, width, embed_size, output_size, pool="max"):
+    super(SimpleNet2, self).__init__()
+    p_width = width//6
+    self.pool = nn.MaxPool2d(p_width, stride=p_width) \
+      if pool == 'max' else nn.AvgPool2d(p_width, stride=p_width)
+    self.fc1 = nn.Linear(36 * embed_size, output_size)
 
-    def forward(self, x):
-      # print(x.size())
-      out = x.permute(0, 3, 1, 2) #nhwc to nchw
-      # print(out.size())
-      out = self.pool(out) 
-      out = torch.flatten(out, start_dim = 1)
-      # print(out.size())
-      # out = torch.max(x, (2, 3)) # Max pooling
-      out = self.fc1(out)
+  def forward(self, x):
+    # print(x.size())
+    out = x.permute(0, 3, 1, 2) #nhwc to nchw
+    # print(out.size())
+    out = self.pool(out) 
+    out = torch.flatten(out, start_dim = 1)
+    # print(out.size())
+    # out = torch.max(x, (2, 3)) # Max pooling
+    out = self.fc1(out)
 
-      # print("\tIn Model: input size", x.size(), # splits by batch size, sanity check works
-      #         "output size", out.size())
-      return out
+    # print("\tIn Model: input size", x.size(), # splits by batch size, sanity check works
+    #         "output size", out.size())
+    return out
+
+class LemniscateLinear(nn.Module):
+  # for Lemniscate embeddings
+  # [batch_size x 128] -> [batch_size x 1000]
+  def __init__(self, embed_size, output_size):
+      super(LemniscateLinear, self).__init__()
+      self.fc1 = nn.Linear(embed_size, output_size)
+
+  def forward(self, x):
+    return self.fc1(x)
+
+# TODO LIST
+# done:
+# build the rest of the pipeline!
+# simple linear model
+# have the labels
+# compute accuracy
+# need to save model periodically
+# weight decay
+# scheduled loss
+
+# now:
+# similar to bearpaw - add checkpointing and specific train fxn
 
 def main():
   print("IMG_NET EMBED TRAIN")
@@ -170,13 +200,23 @@ def main():
   h, w = map(int, args.input_size.split(','))
   input_size = (h, w)
     
-    
   # Create Data Reader
   train_reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
     args.batch_size, h, args.num_loading_workers, True)
   print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
-
   
+  if args.use_lemniscate:
+    print("=> Loading lemniscate")
+    checkpoint = torch.load(args.use_lemniscate)
+    embeddings = checkpoint['lemniscate'].memory if hasattr(checkpoint['lemniscate'], 'memory') else checkpoint['lemniscate']["memory"]
+    embed_labels = torch.LongTensor([y for (p, y) in train_reader.dataset_folder.npys]).cuda()
+    assert embeddings.size()[0] == embed_labels.size()[0]
+    tdset = tud.TensorDataset(embeddings, embed_labels)
+    train_reader.loader = tud.DataLoader(
+      tdset, 
+      batch_size=args.batch_size, shuffle=False,
+      num_workers=0, pin_memory=False
+    )
 
   #num supposed images: 1281167
   #num batches: 2503 * 512 = 1281536 (close enough, batch is overest.)
@@ -184,23 +224,15 @@ def main():
   # a = reader.dequeue()
   # returns a[0] = torch.Size([256, 60, 60, 32])
   #         a[1] = torch.Size([256])
-  # however, norm of last dim is not 1, can be like 5
-
-  # done:
-  # build the rest of the pipeline!
-  # simple linear model
-  # have the labels
-  # compute accuracy
-  # need to save model periodically
-  # weight decay
-  # scheduled loss
-
-  # now:
-  # similar to bearpaw - add checkpointing and specific train fxn
-  
+  # however, norm of last dim is not 1, can be like 5 
 
   device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-  model = SimpleNet2(w, args.embedding_dim, args.num_classes, 'avg')
+  
+  if args.use_lemniscate: #Lemniscate
+    model = LemniscateLinear(args.embedding_dim, args.num_classes)
+  else: # SegSort
+    model = SimpleNet2(w, args.embedding_dim, args.num_classes, 'avg')
+
   if torch.cuda.device_count() > 1:
     print("Using", torch.cuda.device_count(), "GPUs")
     # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
@@ -235,6 +267,8 @@ def main():
     lr = adjust_learning_rate(lr, optimer, epoch, args.schedule)
 
     print('\nEpoch: [%d | %d] LR: %f' % (epoch + 1, args.num_epochs, lr))
+
+    print_every = 1000 if args.use_lemniscate else 1
     tr_loss, tr_acc = train(train_reader, model, loss_fn, optimer, epoch, lr, device)
     best_acc = max(best_acc, tr_acc)
 
@@ -250,17 +284,16 @@ def main():
       }, args.snapshot_dir)
 
 
-def train(reader, model, loss_fn, optimer, epoch, lr, device): #one epoch
+def train(reader, model, loss_fn, optimer, epoch, lr, device, print_every=1000): #one epoch
   loss = acc = 0
   for i, data in enumerate(reader.loader):
     start_time = time.time()
 
     embeds, labels = data
+    # pdb.set_trace()
     
-    embeds.requires_grad = False
-    labels.requires_grad = False
-    embeds = embeds.to(device)
-    labels = labels.to(device)
+    embeds = embeds.detach().to(device)
+    labels = labels.detach().to(device)
     y_pred = model(embeds)
     #should be [batch x 1000]
 
@@ -276,7 +309,9 @@ def train(reader, model, loss_fn, optimer, epoch, lr, device): #one epoch
 
     duration = time.time() - start_time
     desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}, dur = {:.2f}s/it, [{}/{}]'.format(loss, lr, acc, epoch, duration, i, reader.num_batches)
-    print(desc)
+    
+    if i % print_every == 0:
+      print(desc)
 
   return loss, acc
 
