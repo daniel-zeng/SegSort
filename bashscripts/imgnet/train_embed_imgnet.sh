@@ -13,12 +13,12 @@
 
 BATCH_SIZE=256
 TRAIN_INPUT_SIZE=60,60
-WEIGHT_DECAY=5e-4
+WEIGHT_DECAY=1e-4
 NUM_EPOCHS1=300
 NUM_CLASSES=1000
 NUM_GPU=2
 LEARNING_RATE=0.1
-NUM_LOADING_WORKERS=5
+NUM_LOADING_WORKERS=4
 
 # Set up parameters for inference.
 # INFERENCE_INPUT_SIZE=480,480
@@ -37,7 +37,7 @@ SNAPSHOT_DIR=snapshots/imgnet/unsup_embed/unsup_embed_lr1e-1_it10k
 IS_TRAIN_INET_1=1
 
 # Set up the data directory.
-DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeds
+DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeds/32
 
 # Update PYTHONPATH.
 export PYTHONPATH=`pwd`:$PYTHONPATH

@@ -249,7 +249,7 @@ def main():
   print(reader.num_batches)
   #num supposed images: 1281167
 
-  train_save_dir = os.path.join(args.save_dir, "train", args.embedding_dim)
+  train_save_dir = os.path.join(args.save_dir, args.embedding_dim, "train")
   curr_class_name_tmp = curr_class_name
   for step in pbar:
     start_time = time.time()

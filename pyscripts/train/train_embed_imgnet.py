@@ -106,6 +106,8 @@ def adjust_learning_rate(lr, optimizer, epoch, schedule):
   return lr
 
 class SimpleNet(nn.Module):
+    # [batch_size x 60 x 60 x 32] -> [batch_size x 1 x 1 x 32] ->
+    # [batch_size x 1000] (has dimension reduction in middle)
     def __init__(self, width, input_size, output_size, pool="max"):
         super(SimpleNet, self).__init__()
         self.pool = nn.MaxPool2d(width, stride=width) \
@@ -127,6 +129,8 @@ class SimpleNet(nn.Module):
       return out
 
 class SimpleNet2(nn.Module):
+    # [batch_size x 60 x 60 x 32] -> [batch_size x 6 x 6 x 32] ->
+    # [batch_size x 1152] -> [batch_size x 1000]
     def __init__(self, width, embed_size, output_size, pool="max"):
         super(SimpleNet2, self).__init__()
         p_width = width//6
@@ -171,6 +175,8 @@ def main():
   train_reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
     args.batch_size, h, args.num_loading_workers, True)
   print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
+
+  
 
   #num supposed images: 1281167
   #num batches: 2503 * 512 = 1281536 (close enough, batch is overest.)
