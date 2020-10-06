@@ -18,6 +18,7 @@ from torch.nn import functional as F
 from torch import optim
 import torchvision.transforms as transforms
 import torch.utils.data as tud
+import torchvision.datasets as datasets
 
 from seg_models.imagenet_embed_reader import ImageNetEmbedReader
 from tqdm import tqdm
@@ -199,22 +200,35 @@ def main():
   # # The segmentation network is stride 8 by default.
   h, w = map(int, args.input_size.split(','))
   input_size = (h, w)
-    
+  
+
+  dataset_folder = datasets.ImageFolder(
+    os.path.join(args.data_dir, "train"),
+    transforms.Compose([
+        transforms.RandomResizedCrop(224, scale=(0.2,1.)),
+        transforms.RandomGrayscale(p=0.2),
+        transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+    ]))
+
   # Create Data Reader
-  train_reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
-    args.batch_size, h, args.num_loading_workers, True)
-  print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
+  # train_reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
+  #   args.batch_size, h, args.num_loading_workers, True)
+  # print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
+  train_reader = {}
   
   if args.use_lemniscate:
     print("=> Loading lemniscate")
     checkpoint = torch.load(args.use_lemniscate)
     embeddings = checkpoint['lemniscate'].memory if hasattr(checkpoint['lemniscate'], 'memory') else checkpoint['lemniscate']["memory"]
-    embed_labels = torch.LongTensor([y for (p, y) in train_reader.dataset_folder.npys]).cuda()
+    embeddings *= 10
+    embed_labels = torch.LongTensor([y for (p, y) in dataset_folder.imgs]).cuda()
     assert embeddings.size()[0] == embed_labels.size()[0]
     tdset = tud.TensorDataset(embeddings, embed_labels)
-    train_reader.loader = tud.DataLoader(
+    train_reader['loader'] = tud.DataLoader(
       tdset, 
-      batch_size=args.batch_size, shuffle=False,
+      batch_size=args.batch_size, shuffle=True,
       num_workers=0, pin_memory=False
     )
 
@@ -242,8 +256,8 @@ def main():
   
   lr = args.learning_rate
   loss_fn = nn.CrossEntropyLoss().cuda()
-  optimer = optim.Adam(model.parameters(), 
-    lr = args.learning_rate, weight_decay = args.weight_decay)
+  optimer = optim.SGD(model.parameters(), 
+    lr = args.learning_rate, momentum = args.momentum, weight_decay = args.weight_decay)
 
   start_epoch = 0
   if args.restore_from is not None and len(args.restore_from) > 0:
@@ -272,6 +286,8 @@ def main():
     tr_loss, tr_acc = train(train_reader, model, loss_fn, optimer, epoch, lr, device)
     best_acc = max(best_acc, tr_acc)
 
+    pdb.set_trace()
+
     logger.append([lr, tr_loss, tr_acc])
 
     if epoch * args.save_pred_every == 0 and epoch > 0:
@@ -286,14 +302,16 @@ def main():
 
 def train(reader, model, loss_fn, optimer, epoch, lr, device, print_every=1000): #one epoch
   loss = acc = 0
-  for i, data in enumerate(reader.loader):
-    start_time = time.time()
-
+  for i, data in enumerate(reader['loader']):
     embeds, labels = data
-    # pdb.set_trace()
-    
+      # pdb.set_trace()
+      
     embeds = embeds.detach().to(device)
     labels = labels.detach().to(device)
+    # for j in range(100):
+    start_time = time.time()
+
+    
     y_pred = model(embeds)
     #should be [batch x 1000]
 
@@ -302,16 +320,21 @@ def train(reader, model, loss_fn, optimer, epoch, lr, device, print_every=1000):
     optimer.zero_grad()
     loss.backward()
     optimer.step()
+    
+    loss_prev = loss
+    loss = loss_fn(model(embeds), labels)
 
     max_index = torch.argmax(y_pred, dim = 1)
     # pdb.set_trace()
     acc = (max_index == labels).double().mean().item()
 
     duration = time.time() - start_time
-    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}, dur = {:.2f}s/it, [{}/{}]'.format(loss, lr, acc, epoch, duration, i, reader.num_batches)
+    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}, dur = {:.2f}s/it, [{}/{}]'.format(loss, lr, acc, epoch, duration, i, 0)
     
     if i % print_every == 0:
       print(desc)
+      print(loss_prev)
+    # pdb.set_trace()
 
   return loss, acc
 

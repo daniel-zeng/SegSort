@@ -10,13 +10,13 @@
 # Set up parameters for training. 
 #tw: large epochs, 256 batch size
 
-BATCH_SIZE=256
+BATCH_SIZE=2048
 TRAIN_INPUT_SIZE=60,60
 WEIGHT_DECAY=1e-4
 NUM_EPOCHS1=200
 NUM_CLASSES=1000
 NUM_GPU=2
-LEARNING_RATE=3e-2
+LEARNING_RATE=3
 NUM_LOADING_WORKERS=4
 
 # Set up parameters for inference.
@@ -37,8 +37,9 @@ SNAPSHOT_DIR=snapshots/imgnet/unsup_embed/unsup_embed_lr1e-1_it10k
 IS_TRAIN_INET_1=1
 
 # Set up the data directory.
-DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeds/32
-LEMNISCATE_DIR=~/lemniscate.pytorch/lemniscate_resnet50_update.pth
+# DATAROOT_EMBED=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeds/32
+DATAROOT_EMBED=/home/public/public_dataset/ILSVRC2014/Img
+LEMNISCATE_DIR=~/lemniscate.pytorch/lemniscate_resnet50.pth
 
 # Update PYTHONPATH.
 export PYTHONPATH=`pwd`:$PYTHONPATH

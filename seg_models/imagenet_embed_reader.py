@@ -20,10 +20,10 @@ class NumpyFolder(datasets.DatasetFolder):
     self.npys = self.samples
 
 # Likely don't need
-def simple_collate(batch):
-  imgs = np.array([b[0] for b in batch])
-  labels = np.array([b[1] for b in batch])
-  return (imgs, labels)
+# def simple_collate(batch):
+#   imgs = np.array([b[0] for b in batch])
+#   labels = np.array([b[1] for b in batch])
+#   return (imgs, labels)
 
 class ImageNetEmbedReader(object):
   """
