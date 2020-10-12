@@ -59,8 +59,6 @@ def get_arguments():
                       help='Whether to updates moving mean and variance.')
   parser.add_argument('--learning_rate', type=float, default=2.5e-4,
                       help='Base learning rate.')
-  parser.add_argument('--power', type=float, default=0.9,
-                      help='Decay for poly learing rate policy.')
   parser.add_argument('--momentum', type=float, default=0.9,
                       help='Momentum component of the optimiser.')
   parser.add_argument('--weight_decay', type=float, default=5e-4,
@@ -79,10 +77,13 @@ def get_arguments():
                       help='Whether to randomly scale the inputs.')
   parser.add_argument('--num_loading_workers', type=int, default=10,
                       help='Number of workers to load imagenet.')
-  parser.add_argument('--schedule', type=int, nargs='+', default=[70, 140],
+  parser.add_argument('--schedule', type=int, nargs='+', default=[40],
                         help='Decrease learning rate at these epochs.')
   parser.add_argument('--gamma', type=float, default=0.1, help='LR is multiplied by gamma on schedule.')
-
+  parser.add_argument('--power', type=float, default=0.6,
+                      help='Decay for poly learing rate policy.')
+  parser.add_argument('--decay', type=float, default=0.4,
+                      help='Decay for exponential learing rate policy.')                      
   # SegSort parameters.
   parser.add_argument('--embedding_dim', type=int, default=32,
                       help='Dimension of the feature embeddings.')
@@ -106,11 +107,23 @@ def save_checkpoint(state, snapshot_dir, filename='checkpoint.pth.tar'):
     filepath = os.path.join(snapshot_dir, filename)
     torch.save(state, filepath)
 
-def adjust_learning_rate(lr, optimizer, epoch, schedule):
+def adjust_learning_rate(lr, optimizer, epoch, schedule, gamma):
   if epoch in schedule:
-      lr *= args.gamma
+      lr *= gamma
       for param_group in optimizer.param_groups:
         param_group['lr'] = lr
+  return lr
+
+def adjust_learning_rate_exp(base_lr, optimizer, epoch, decay):
+  lr = base_lr * (1 / (1 + decay * epoch))
+  for param_group in optimizer.param_groups:
+    param_group['lr'] = lr
+  return lr
+
+def adjust_learning_rate_poly(base_lr, optimizer, epoch, total_epoch, power):
+  lr = base_lr * ((1 - epoch/total_epoch) ** power)
+  for param_group in optimizer.param_groups:
+    param_group['lr'] = lr
   return lr
 
 class SimpleNet(nn.Module):
@@ -170,6 +183,14 @@ class LemniscateLinear(nn.Module):
   def forward(self, x):
     return self.fc1(x)
 
+def weight_init(m):
+  if isinstance(m, nn.Conv2d):
+    nn.init.xavier_normal_(m.weight, gain=nn.init.calculate_gain('relu'))
+    nn.init.zeros_(m.bias)
+  elif isinstance(m, nn.Linear):
+    nn.init.normal_(m.weight)
+    nn.init.zeros_(m.bias)
+
 # TODO LIST
 # done:
 # build the rest of the pipeline!
@@ -179,9 +200,16 @@ class LemniscateLinear(nn.Module):
 # need to save model periodically
 # weight decay
 # scheduled loss
-
-# now:
 # similar to bearpaw - add checkpointing and specific train fxn
+
+# done:
+# subtract features w avg - tried
+# exponential LR - tried
+# change numerical value of input
+# try different layer init.
+# change weight decay? lr might be imposing
+
+# try: emailing zhirong for advice
 
 def main():
   print("IMG_NET EMBED TRAIN")
@@ -201,36 +229,45 @@ def main():
   h, w = map(int, args.input_size.split(','))
   input_size = (h, w)
   
-
-  dataset_folder = datasets.ImageFolder(
-    os.path.join(args.data_dir, "train"),
-    transforms.Compose([
-        transforms.RandomResizedCrop(224, scale=(0.2,1.)),
-        transforms.RandomGrayscale(p=0.2),
-        transforms.ColorJitter(0.4, 0.4, 0.4, 0.4),
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-    ]))
+  device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
   # Create Data Reader
-  # train_reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
-  #   args.batch_size, h, args.num_loading_workers, True)
-  # print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
-  train_reader = {}
+  train_reader = ImageNetEmbedReader(os.path.join(args.data_dir, "train"), 
+    args.batch_size, h, args.num_loading_workers, False)
+  print("Train: Total Imgs: {}, Num Batches: {}".format(train_reader.total_imgs, train_reader.num_batches))
   
+  
+  embeddings = None
+  embed_labels = torch.LongTensor([y for (p, y) in train_reader.dataset_folder.npys]).to(device)
+
   if args.use_lemniscate:
-    print("=> Loading lemniscate")
-    checkpoint = torch.load(args.use_lemniscate)
-    embeddings = checkpoint['lemniscate'].memory if hasattr(checkpoint['lemniscate'], 'memory') else checkpoint['lemniscate']["memory"]
-    embeddings *= 10
-    embed_labels = torch.LongTensor([y for (p, y) in dataset_folder.imgs]).cuda()
-    assert embeddings.size()[0] == embed_labels.size()[0]
-    tdset = tud.TensorDataset(embeddings, embed_labels)
-    train_reader['loader'] = tud.DataLoader(
-      tdset, 
-      batch_size=args.batch_size, shuffle=True,
-      num_workers=0, pin_memory=False
-    )
+    print("=> Loading lemniscate 2048")
+    embeddings = torch.load(args.use_lemniscate).to(device) #9.6gb can fit in gpu
+    
+    # pdb.set_trace()
+    # embeddings = checkpoint['lemniscate'].memory if hasattr(checkpoint['lemniscate'], 'memory') else checkpoint['lemniscate']["memory"]
+    embeddings *= 1000
+    embeddings.to("cuda:1")
+  else:
+    # Load numpy embeddings into torch Tensors
+    shape = train_reader.dataset_folder[0].size()
+    shape[0] = train_reader.total_imgs
+    embeddings = torch.zeros(shape).cpu() #1mil x 60x60x emb.dim 
+      # okay. when we compute embeddings, it'll be conveniently scaled down to be sizable.
+    pdb.set_trace()
+    for batch_idx, (inputs, labels) in enumerate(train_reader.loader):
+      inputs = inputs
+      batchSize = inputs.size(0)
+      embeddings[batch_idx*batchSize:batch_idx*batchSize+batchSize] = inputs
+    pdb.set_trace()
+    
+  assert embeddings.size()[0] == embed_labels.size()[0]
+  tdset = tud.TensorDataset(embeddings, embed_labels)
+  train_reader.loader = tud.DataLoader(
+    tdset, 
+    batch_size=args.batch_size, shuffle=True,
+    num_workers=0, pin_memory=False
+  )  
 
   #num supposed images: 1281167
   #num batches: 2503 * 512 = 1281536 (close enough, batch is overest.)
@@ -240,12 +277,13 @@ def main():
   #         a[1] = torch.Size([256])
   # however, norm of last dim is not 1, can be like 5 
 
-  device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+  
   
   if args.use_lemniscate: #Lemniscate
     model = LemniscateLinear(args.embedding_dim, args.num_classes)
   else: # SegSort
     model = SimpleNet2(w, args.embedding_dim, args.num_classes, 'avg')
+  model.apply(weight_init)
 
   if torch.cuda.device_count() > 1:
     print("Using", torch.cuda.device_count(), "GPUs")
@@ -254,8 +292,9 @@ def main():
     model = nn.DataParallel(model) 
   model.to(device)
   
-  lr = args.learning_rate
   loss_fn = nn.CrossEntropyLoss().cuda()
+  # optimer = optim.Adam(model.parameters(), 
+  #   lr = args.learning_rate, weight_decay = args.weight_decay)
   optimer = optim.SGD(model.parameters(), 
     lr = args.learning_rate, momentum = args.momentum, weight_decay = args.weight_decay)
 
@@ -273,22 +312,33 @@ def main():
     logger = Logger(os.path.join(args.checkpoint_dir, 'log.txt'), resume=True)
   else:
     logger = Logger(os.path.join(args.snapshot_dir, 'log.txt'))
-    logger.set_names(['Learning Rate', 'Train Loss', 'Train Acc.'])
+    logger.set_names(['Learning Rate', 'Train Loss', 'Train Acc.', 'Best Acc.'])
+
+
+  #solve lstsq? dont know if there's a closed form
+  # coefs = torch.lstsq(embeddings, embed_labels)
 
 
   best_acc = 0
+  lr = args.learning_rate
   for epoch in range(start_epoch, args.num_epochs):
-    lr = adjust_learning_rate(lr, optimer, epoch, args.schedule)
+    # lr = adjust_learning_rate(lr, optimer, epoch, args.schedule, args.gamma)
+    if epoch > 1:
+      lr = adjust_learning_rate_exp(args.learning_rate, optimer, epoch, args.decay)
+      # lr = adjust_learning_rate_poly(args.learning_rate, optimer, epoch, 1.05 * args.num_epochs, args.power)
 
-    print('\nEpoch: [%d | %d] LR: %f' % (epoch + 1, args.num_epochs, lr))
+    print('\nEpoch: [%d | %d] LR: %f' % (epoch, args.num_epochs, lr))
 
     print_every = 1000 if args.use_lemniscate else 1
-    tr_loss, tr_acc = train(train_reader, model, loss_fn, optimer, epoch, lr, device)
-    best_acc = max(best_acc, tr_acc)
+    avg_tr_loss, avg_tr_acc = train(train_reader, model, loss_fn, optimer, epoch, lr, device, print_every)
+    best_acc = max(best_acc, avg_tr_loss)
 
-    pdb.set_trace()
+    # pdb.set_trace()
 
-    logger.append([lr, tr_loss, tr_acc])
+    # No validation yet :( because need to train lemniscate for validation features
+    # Shouldnt be hard at all yet though
+
+    logger.append([lr, avg_tr_loss, avg_tr_acc, best_acc])
 
     if epoch * args.save_pred_every == 0 and epoch > 0:
       save_checkpoint({
@@ -301,42 +351,39 @@ def main():
 
 
 def train(reader, model, loss_fn, optimer, epoch, lr, device, print_every=1000): #one epoch
-  loss = acc = 0
-  for i, data in enumerate(reader['loader']):
-    embeds, labels = data
-      # pdb.set_trace()
-      
+  avg_loss = avg_acc = 0
+  start_epoch = time.time()
+  for i, (embeds, labels) in enumerate(reader.loader):
+    # if i == 0 and epoch > 4:
+    #   pdb.set_trace()
     embeds = embeds.detach().to(device)
     labels = labels.detach().to(device)
     # for j in range(100):
     start_time = time.time()
-
     
-    y_pred = model(embeds)
-    #should be [batch x 1000]
-
+    y_pred = model(embeds) #should be [batch x 1000] 
+    # y_pred -= torch.mean(y_pred, dim=0, keepdim=True)
     loss = loss_fn(y_pred, labels)
-    
+    avg_loss += loss
+
     optimer.zero_grad()
     loss.backward()
     optimer.step()
-    
-    loss_prev = loss
-    loss = loss_fn(model(embeds), labels)
 
     max_index = torch.argmax(y_pred, dim = 1)
     # pdb.set_trace()
     acc = (max_index == labels).double().mean().item()
+    avg_acc += acc
 
     duration = time.time() - start_time
-    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}, dur = {:.2f}s/it, [{}/{}]'.format(loss, lr, acc, epoch, duration, i, 0)
-    
+    desc = 'loss = {:.3f}, lr = {:.6f}, acc = {:.3f}, epoch = {}, dur = {:.2f}s/it, [{}/{}]'.format(loss, lr, acc, epoch, duration, i, reader.num_batches)    
     if i % print_every == 0:
       print(desc)
-      print(loss_prev)
     # pdb.set_trace()
-
-  return loss, acc
+  duration = time.time() - start_epoch
+  desc = 'avg_loss = {:.3f}, avg_acc = {:.3f}, epoch = {}, dur = {:.2f}'.format(avg_loss/reader.num_batches, avg_acc/reader.num_batches, epoch, duration)    
+  print(desc)
+  return avg_loss/reader.num_batches, avg_acc/reader.num_batches
 
 
 if __name__ == '__main__':

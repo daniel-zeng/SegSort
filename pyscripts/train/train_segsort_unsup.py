@@ -10,6 +10,7 @@ import utils.general
 
 import network.common.layers as nn
 import network.segsort.train_utils as train_utils
+# import network.multigpu.layers as nn_mgpu
 import numpy as np
 import tensorflow as tf
 
@@ -69,6 +70,8 @@ def get_arguments():
   # SegSort parameters.
   parser.add_argument('--embedding_dim', type=int, default=32,
                       help='Dimension of the feature embeddings.')
+  parser.add_argument('--num_gpu', type=int, default=2,
+                      help='Number of GPU to use.')
   parser.add_argument('--concentration', type=float, default=10.0,
                       help='Concentration of the vMF distribution.')
   # Misc paramters.
@@ -115,6 +118,18 @@ def load(saver, sess, ckpt_path):
   saver.restore(sess, ckpt_path)
   print('Restored model parameters from {}'.format(ckpt_path))
 
+def custom_split(x, num_gpu):
+  size_splits = [1, 7]
+  xs = tf.split(x, size_splits, axis=0)
+
+  # Allocate to each gpu.
+  xs_gpu = []
+  for i in range(num_gpu):
+    gpu_id = '/gpu:{:d}'.format(i)
+    with tf.device(gpu_id):
+      xs_gpu.append(tf.identity(xs[i]))
+
+  return xs_gpu
 
 def main():
   """Create the model and start training.
@@ -156,12 +171,15 @@ def main():
   # Shrink labels to the size of the network output.
   cluster_labels = tf.image.resize_nearest_neighbor(
       cluster_label_batch, innet_size)
-    
+  
+  # images_mgpu = custom_split(image_batch, args.num_gpu)
+
   # Create network and predictions.
-  outputs = model(image_batch,
-                  args.embedding_dim,
-                  args.is_training,
-                  args.use_global_status)
+  with tf.device('/gpu:1'):
+    outputs = model(image_batch,
+                    args.embedding_dim,
+                    args.is_training,
+                    args.use_global_status)
 
   # Grab variable names which should be restored from checkpoints.
   restore_var = [
@@ -169,19 +187,24 @@ def main():
       if 'block5' not in v.name or not args.not_restore_classifier
   ]
 
-  # Add Unsupervised SegSort loss.
-  seg_losses = train_utils.add_unsupervised_segsort_loss(
-      outputs[0], args.concentration, cluster_labels, )
-                                          
-  # Define weight regularization loss.
-  w = args.weight_decay
-  l2_losses = [w*tf.nn.l2_loss(v) for v in tf.trainable_variables()
-                 if 'weights' in v.name]
+  # Collect embedding from each gpu.
+  with tf.device('/gpu:{:d}'.format(args.num_gpu-1)):
+    # embedding_list = [output[0] for output in outputs]
+    # embedding = tf.concat(embedding_list, axis=0)
 
-  # Sum all loss terms.
-  mean_seg_loss = seg_losses
-  mean_l2_loss = tf.add_n(l2_losses)
-  reduced_loss = mean_seg_loss + mean_l2_loss
+    # Add Unsupervised SegSort loss.
+    seg_losses = train_utils.add_unsupervised_segsort_loss(
+        outputs[0], args.concentration, cluster_labels, )
+                                            
+    # Define weight regularization loss.
+    w = args.weight_decay
+    l2_losses = [w*tf.nn.l2_loss(v) for v in tf.trainable_variables()
+                  if 'weights' in v.name]
+
+    # Sum all loss terms.
+    mean_seg_loss = seg_losses
+    mean_l2_loss = tf.add_n(l2_losses)
+    reduced_loss = mean_seg_loss + mean_l2_loss
 
   # Grab variable names which are used for training.
   all_trainable = tf.trainable_variables()
@@ -195,9 +218,11 @@ def main():
 
   # Define optimisation parameters.
   base_lr = tf.constant(args.learning_rate)
+  pow_till = args.num_steps
+  pow_till = 100000
   learning_rate = tf.scalar_mul(
     base_lr,
-    tf.pow((1-step_ph/args.num_steps), args.power))
+    tf.pow((1-step_ph/pow_till), args.power))
 
   opt_base = tf.train.MomentumOptimizer(learning_rate*1.0, args.momentum)
   opt_fc = tf.train.MomentumOptimizer(learning_rate*10.0, args.momentum)
@@ -257,7 +282,7 @@ def main():
   saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=10)
     
   # Load variables if the checkpoint is provided.
-  if args.restore_from is not None:
+  if args.restore_from is not None and len(args.restore_from) > 0:
     loader = tf.train.Saver(var_list=restore_var)
     load(loader, sess, args.restore_from)
     

@@ -12,9 +12,10 @@ BATCH_SIZE=8
 TRAIN_INPUT_SIZE=336,336
 WEIGHT_DECAY=5e-4
 ITER_SIZE=1
-NUM_STEPS=10000
+NUM_STEPS=30000
+SAVE_EVERY=6000
 NUM_CLASSES=21
-LEARNING_RATE=2e-3
+LEARNING_RATE=2e-2 #seems like this is best LR for batch 8 336^2s
 
 # Set up parameters for inference.
 INFERENCE_INPUT_SIZE=480,480
@@ -22,19 +23,19 @@ INFERENCE_STRIDES=320,320
 INFERENCE_SPLIT=val
 
 # Set up SegSort hyper-parameters.
-CONCENTRATION=10
+CONCENTRATION=10  
 EMBEDDING_DIM=32
 NUM_CLUSTERS=5
 KMEANS_ITERATIONS=10
 K_IN_NEAREST_NEIGHBORS=15
 
 # Set up path for saving models.
-SNAPSHOT_DIR=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k
+SNAPSHOT_DIR=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-2_it30k_noimgnet
 
 # Set up the procedure pipeline.
-IS_TRAIN=0
-IS_PROTOTYPE=0
-IS_INFERENCE_MSC=0
+IS_TRAIN=1
+IS_PROTOTYPE=1
+IS_INFERENCE_MSC=1
 IS_BENCHMARK=1
 
 # Update PYTHONPATH.
@@ -44,15 +45,15 @@ export PYTHONPATH=`pwd`:$PYTHONPATH
 DATAROOT=/home/dz/SegSort/dataset/
 
 # Train.
+#--restore_from snapshots/imagenet/trained/resnet_v1_101.ckpt\
 if [ ${IS_TRAIN} -eq 1 ]; then
   python3 pyscripts/train/train_segsort_unsup.py\
     --snapshot_dir ${SNAPSHOT_DIR}\
-    --restore_from snapshots/imagenet/trained/resnet_v1_101.ckpt\
     --data_list dataset/voc12/train+.txt\
     --data_dir ${DATAROOT}\
     --batch_size ${BATCH_SIZE}\
-    --save_pred_every ${NUM_STEPS}\
-    --update_tb_every 50\
+    --save_pred_every ${SAVE_EVERY}\
+    --update_tb_every 1000\
     --input_size ${TRAIN_INPUT_SIZE}\
     --learning_rate ${LEARNING_RATE}\
     --weight_decay ${WEIGHT_DECAY}\

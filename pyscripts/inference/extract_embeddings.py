@@ -160,7 +160,7 @@ def save_numpy_to_dir(save_dir, numpy_list, label_list, idx_to_class, last_batch
 
       curr_idx += 1
   
-def handle_last_batch(img_np, labels_truth, batch_size)
+def handle_last_batch(img_np, labels_truth, batch_size):
   last_batch_dim = img_np.shape[0]
   tmp = list(img_np.shape)
   tmp[0] = batch_size - last_batch_dim
@@ -239,6 +239,7 @@ def main():
   # Load weights.
   loader = tf.train.Saver(var_list=restore_var)
   if args.restore_from is not None:
+    print("Loading restore:", args.restore_from)
     load(loader, sess, args.restore_from)
 
   # Start queue threads.

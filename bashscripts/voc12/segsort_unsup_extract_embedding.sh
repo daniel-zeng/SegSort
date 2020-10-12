@@ -6,34 +6,29 @@
 #   # From SegSort/ directory.
 #   bash bashscripts/voc12/train_segsort_mgpu.sh
 
-
 # Set up parameters for training. 
-
 #tw: large epochs, 256 batch size
-
-
 BATCH_SIZE=64
 TRAIN_INPUT_SIZE=480,480
 NUM_CLASSES=1000
 NUM_GPU=2
-NUM_LOADING_WORKERS=25
+NUM_LOADING_WORKERS=4
 
 # Set up SegSort hyper-parameters.
-EMBEDDING_DIM=32
+EMBEDDING_DIM=128
 
 # Set up path for saving models.
-SNAPSHOT_DIR=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k
+SNAPSHOT_DIR=snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10knoimgnet
 
 # Set up the procedure pipeline.
 IS_EXTRACT_1=1
 
+# Set up the data directory.
+# DATAROOT=/home/dz/SegSort/dataset/
+DATAROOT_IMGNET=/home/public/public_dataset/ILSVRC2014/Img/
 
 # Update PYTHONPATH.
 export PYTHONPATH=`pwd`:$PYTHONPATH
-
-# Set up the data directory.
-DATAROOT=/home/dz/SegSort/dataset/
-DATAROOT_IMGNET=/home/public/public_dataset/ILSVRC2014/Img/
 
 # Train ImageNet for first stage.
 # Run unsup_segsort.sh before this to get checkpoint model

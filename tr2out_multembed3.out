@@ -1,0 +1,944 @@
+IMG_NET EMBED TRAIN
+-----------------------------------------------
+-----------------------------------------------
+| use_lemniscate = /home/dz/lemniscate.pytorch/dim2048_update.pt
+| use_global_status = True
+| num_loading_workers = 10
+| power = 0.6
+| random_scale = True
+| decay = 0.4
+| learning_rate = 0.008
+| gamma = 0.1
+| batch_size = 256
+| embedding_dim = 2048
+| random_seed = 1234
+| is_training = True
+| num_classes = 1000
+| save_pred_every = 25
+| weight_decay = 0.0001
+| num_epochs = 101
+| update_tb_every = 50
+| random_mirror = True
+| random_crop = True
+| num_gpu = 2
+| snapshot_dir = snapshots/imgnet/unsup_embed/unsup_embed_lr3e-3_it100_2/stage1
+| not_restore_classifier = False
+| restore_from = 
+| schedule = [40]
+| momentum = 0.9
+| input_size = 60,60
+| data_dir = snapshots/voc12/unsup_segsort/unsup_segsort_lr2e-3_it10k/embeds/32
+-----------------------------------------------
+-----------------------------------------------
+Train: Total Imgs: 1281167, Num Batches: 5005
+=> Loading lemniscate 2048
+Using 2 GPUs
+
+Epoch: [0 | 101] LR: 0.008000
+loss = 1828.301, lr = 0.008000, acc = 0.000, epoch = 0, dur = 0.18s/it, [0/5005]
+loss = 415.031, lr = 0.008000, acc = 0.242, epoch = 0, dur = 0.00s/it, [1000/5005]
+loss = 280.894, lr = 0.008000, acc = 0.332, epoch = 0, dur = 0.00s/it, [2000/5005]
+loss = 262.343, lr = 0.008000, acc = 0.344, epoch = 0, dur = 0.00s/it, [3000/5005]
+loss = 253.330, lr = 0.008000, acc = 0.348, epoch = 0, dur = 0.00s/it, [4000/5005]
+loss = 203.736, lr = 0.008000, acc = 0.402, epoch = 0, dur = 0.00s/it, [5000/5005]
+avg_loss = 359.983, avg_acc = 0.278, epoch = 0, dur = 37.18
+
+Epoch: [1 | 101] LR: 0.008000
+loss = 215.722, lr = 0.008000, acc = 0.367, epoch = 1, dur = 0.00s/it, [0/5005]
+loss = 177.955, lr = 0.008000, acc = 0.406, epoch = 1, dur = 0.00s/it, [1000/5005]
+loss = 195.359, lr = 0.008000, acc = 0.426, epoch = 1, dur = 0.00s/it, [2000/5005]
+loss = 160.211, lr = 0.008000, acc = 0.422, epoch = 1, dur = 0.00s/it, [3000/5005]
+loss = 211.832, lr = 0.008000, acc = 0.336, epoch = 1, dur = 0.00s/it, [4000/5005]
+loss = 145.882, lr = 0.008000, acc = 0.453, epoch = 1, dur = 0.00s/it, [5000/5005]
+avg_loss = 185.860, avg_acc = 0.404, epoch = 1, dur = 36.12
+
+Epoch: [2 | 101] LR: 0.004444
+loss = 166.695, lr = 0.004444, acc = 0.402, epoch = 2, dur = 0.00s/it, [0/5005]
+loss = 141.784, lr = 0.004444, acc = 0.422, epoch = 2, dur = 0.00s/it, [1000/5005]
+loss = 125.956, lr = 0.004444, acc = 0.520, epoch = 2, dur = 0.00s/it, [2000/5005]
+loss = 127.445, lr = 0.004444, acc = 0.441, epoch = 2, dur = 0.00s/it, [3000/5005]
+loss = 136.409, lr = 0.004444, acc = 0.449, epoch = 2, dur = 0.00s/it, [4000/5005]
+loss = 123.764, lr = 0.004444, acc = 0.496, epoch = 2, dur = 0.00s/it, [5000/5005]
+avg_loss = 135.989, avg_acc = 0.457, epoch = 2, dur = 36.21
+
+Epoch: [3 | 101] LR: 0.003636
+loss = 121.234, lr = 0.003636, acc = 0.516, epoch = 3, dur = 0.00s/it, [0/5005]
+loss = 122.868, lr = 0.003636, acc = 0.480, epoch = 3, dur = 0.00s/it, [1000/5005]
+loss = 108.509, lr = 0.003636, acc = 0.500, epoch = 3, dur = 0.00s/it, [2000/5005]
+loss = 122.002, lr = 0.003636, acc = 0.477, epoch = 3, dur = 0.00s/it, [3000/5005]
+loss = 119.419, lr = 0.003636, acc = 0.508, epoch = 3, dur = 0.00s/it, [4000/5005]
+loss = 104.264, lr = 0.003636, acc = 0.500, epoch = 3, dur = 0.00s/it, [5000/5005]
+avg_loss = 116.336, avg_acc = 0.476, epoch = 3, dur = 34.13
+
+Epoch: [4 | 101] LR: 0.003077
+loss = 116.862, lr = 0.003077, acc = 0.477, epoch = 4, dur = 0.00s/it, [0/5005]
+loss = 107.740, lr = 0.003077, acc = 0.477, epoch = 4, dur = 0.00s/it, [1000/5005]
+loss = 132.001, lr = 0.003077, acc = 0.398, epoch = 4, dur = 0.00s/it, [2000/5005]
+loss = 114.573, lr = 0.003077, acc = 0.480, epoch = 4, dur = 0.00s/it, [3000/5005]
+loss = 98.552, lr = 0.003077, acc = 0.512, epoch = 4, dur = 0.00s/it, [4000/5005]
+loss = 95.759, lr = 0.003077, acc = 0.508, epoch = 4, dur = 0.00s/it, [5000/5005]
+avg_loss = 103.481, avg_acc = 0.491, epoch = 4, dur = 36.07
+
+Epoch: [5 | 101] LR: 0.002667
+loss = 97.568, lr = 0.002667, acc = 0.500, epoch = 5, dur = 0.00s/it, [0/5005]
+loss = 108.640, lr = 0.002667, acc = 0.441, epoch = 5, dur = 0.00s/it, [1000/5005]
+loss = 88.884, lr = 0.002667, acc = 0.520, epoch = 5, dur = 0.01s/it, [2000/5005]
+loss = 88.207, lr = 0.002667, acc = 0.523, epoch = 5, dur = 0.00s/it, [3000/5005]
+loss = 117.540, lr = 0.002667, acc = 0.457, epoch = 5, dur = 0.00s/it, [4000/5005]
+loss = 89.798, lr = 0.002667, acc = 0.504, epoch = 5, dur = 0.00s/it, [5000/5005]
+avg_loss = 94.093, avg_acc = 0.502, epoch = 5, dur = 36.53
+
+Epoch: [6 | 101] LR: 0.002353
+loss = 69.966, lr = 0.002353, acc = 0.555, epoch = 6, dur = 0.00s/it, [0/5005]
+loss = 76.698, lr = 0.002353, acc = 0.566, epoch = 6, dur = 0.00s/it, [1000/5005]
+loss = 95.012, lr = 0.002353, acc = 0.469, epoch = 6, dur = 0.00s/it, [2000/5005]
+loss = 82.116, lr = 0.002353, acc = 0.477, epoch = 6, dur = 0.00s/it, [3000/5005]
+loss = 94.052, lr = 0.002353, acc = 0.480, epoch = 6, dur = 0.00s/it, [4000/5005]
+loss = 98.705, lr = 0.002353, acc = 0.500, epoch = 6, dur = 0.00s/it, [5000/5005]
+avg_loss = 86.895, avg_acc = 0.511, epoch = 6, dur = 36.74
+
+Epoch: [7 | 101] LR: 0.002105
+loss = 91.365, lr = 0.002105, acc = 0.527, epoch = 7, dur = 0.00s/it, [0/5005]
+loss = 69.721, lr = 0.002105, acc = 0.582, epoch = 7, dur = 0.00s/it, [1000/5005]
+loss = 95.884, lr = 0.002105, acc = 0.484, epoch = 7, dur = 0.00s/it, [2000/5005]
+loss = 77.557, lr = 0.002105, acc = 0.508, epoch = 7, dur = 0.00s/it, [3000/5005]
+loss = 82.536, lr = 0.002105, acc = 0.520, epoch = 7, dur = 0.00s/it, [4000/5005]
+loss = 103.792, lr = 0.002105, acc = 0.461, epoch = 7, dur = 0.00s/it, [5000/5005]
+avg_loss = 81.118, avg_acc = 0.519, epoch = 7, dur = 36.08
+
+Epoch: [8 | 101] LR: 0.001905
+loss = 67.626, lr = 0.001905, acc = 0.547, epoch = 8, dur = 0.00s/it, [0/5005]
+loss = 80.920, lr = 0.001905, acc = 0.535, epoch = 8, dur = 0.00s/it, [1000/5005]
+loss = 82.768, lr = 0.001905, acc = 0.484, epoch = 8, dur = 0.00s/it, [2000/5005]
+loss = 66.681, lr = 0.001905, acc = 0.527, epoch = 8, dur = 0.00s/it, [3000/5005]
+loss = 88.939, lr = 0.001905, acc = 0.500, epoch = 8, dur = 0.00s/it, [4000/5005]
+loss = 86.730, lr = 0.001905, acc = 0.480, epoch = 8, dur = 0.00s/it, [5000/5005]
+avg_loss = 76.382, avg_acc = 0.526, epoch = 8, dur = 36.34
+
+Epoch: [9 | 101] LR: 0.001739
+loss = 68.517, lr = 0.001739, acc = 0.520, epoch = 9, dur = 0.00s/it, [0/5005]
+loss = 68.727, lr = 0.001739, acc = 0.512, epoch = 9, dur = 0.00s/it, [1000/5005]
+loss = 71.913, lr = 0.001739, acc = 0.523, epoch = 9, dur = 0.00s/it, [2000/5005]
+loss = 64.834, lr = 0.001739, acc = 0.527, epoch = 9, dur = 0.00s/it, [3000/5005]
+loss = 70.922, lr = 0.001739, acc = 0.496, epoch = 9, dur = 0.00s/it, [4000/5005]
+loss = 64.299, lr = 0.001739, acc = 0.566, epoch = 9, dur = 0.00s/it, [5000/5005]
+avg_loss = 72.407, avg_acc = 0.532, epoch = 9, dur = 36.31
+
+Epoch: [10 | 101] LR: 0.001600
+loss = 61.052, lr = 0.001600, acc = 0.566, epoch = 10, dur = 0.00s/it, [0/5005]
+loss = 70.670, lr = 0.001600, acc = 0.566, epoch = 10, dur = 0.00s/it, [1000/5005]
+loss = 73.229, lr = 0.001600, acc = 0.555, epoch = 10, dur = 0.00s/it, [2000/5005]
+loss = 65.181, lr = 0.001600, acc = 0.531, epoch = 10, dur = 0.00s/it, [3000/5005]
+loss = 66.419, lr = 0.001600, acc = 0.520, epoch = 10, dur = 0.00s/it, [4000/5005]
+loss = 62.886, lr = 0.001600, acc = 0.539, epoch = 10, dur = 0.00s/it, [5000/5005]
+avg_loss = 69.008, avg_acc = 0.536, epoch = 10, dur = 37.08
+
+Epoch: [11 | 101] LR: 0.001481
+loss = 70.111, lr = 0.001481, acc = 0.523, epoch = 11, dur = 0.00s/it, [0/5005]
+loss = 68.244, lr = 0.001481, acc = 0.551, epoch = 11, dur = 0.00s/it, [1000/5005]
+loss = 66.199, lr = 0.001481, acc = 0.520, epoch = 11, dur = 0.00s/it, [2000/5005]
+loss = 85.602, lr = 0.001481, acc = 0.484, epoch = 11, dur = 0.00s/it, [3000/5005]
+loss = 79.922, lr = 0.001481, acc = 0.504, epoch = 11, dur = 0.00s/it, [4000/5005]
+loss = 67.834, lr = 0.001481, acc = 0.539, epoch = 11, dur = 0.00s/it, [5000/5005]
+avg_loss = 66.061, avg_acc = 0.541, epoch = 11, dur = 35.88
+
+Epoch: [12 | 101] LR: 0.001379
+loss = 72.486, lr = 0.001379, acc = 0.520, epoch = 12, dur = 0.00s/it, [0/5005]
+loss = 77.578, lr = 0.001379, acc = 0.492, epoch = 12, dur = 0.00s/it, [1000/5005]
+loss = 63.519, lr = 0.001379, acc = 0.508, epoch = 12, dur = 0.00s/it, [2000/5005]
+loss = 65.257, lr = 0.001379, acc = 0.523, epoch = 12, dur = 0.00s/it, [3000/5005]
+loss = 68.620, lr = 0.001379, acc = 0.520, epoch = 12, dur = 0.00s/it, [4000/5005]
+loss = 60.925, lr = 0.001379, acc = 0.531, epoch = 12, dur = 0.00s/it, [5000/5005]
+avg_loss = 63.458, avg_acc = 0.545, epoch = 12, dur = 36.70
+
+Epoch: [13 | 101] LR: 0.001290
+loss = 59.208, lr = 0.001290, acc = 0.539, epoch = 13, dur = 0.00s/it, [0/5005]
+loss = 57.979, lr = 0.001290, acc = 0.582, epoch = 13, dur = 0.00s/it, [1000/5005]
+loss = 74.831, lr = 0.001290, acc = 0.500, epoch = 13, dur = 0.00s/it, [2000/5005]
+loss = 56.030, lr = 0.001290, acc = 0.578, epoch = 13, dur = 0.00s/it, [3000/5005]
+loss = 74.173, lr = 0.001290, acc = 0.500, epoch = 13, dur = 0.00s/it, [4000/5005]
+loss = 49.497, lr = 0.001290, acc = 0.586, epoch = 13, dur = 0.00s/it, [5000/5005]
+avg_loss = 61.181, avg_acc = 0.549, epoch = 13, dur = 35.86
+
+Epoch: [14 | 101] LR: 0.001212
+loss = 54.607, lr = 0.001212, acc = 0.535, epoch = 14, dur = 0.00s/it, [0/5005]
+loss = 68.232, lr = 0.001212, acc = 0.516, epoch = 14, dur = 0.00s/it, [1000/5005]
+loss = 51.617, lr = 0.001212, acc = 0.543, epoch = 14, dur = 0.00s/it, [2000/5005]
+loss = 65.314, lr = 0.001212, acc = 0.523, epoch = 14, dur = 0.00s/it, [3000/5005]
+loss = 64.473, lr = 0.001212, acc = 0.562, epoch = 14, dur = 0.00s/it, [4000/5005]
+loss = 57.147, lr = 0.001212, acc = 0.531, epoch = 14, dur = 0.00s/it, [5000/5005]
+avg_loss = 59.124, avg_acc = 0.552, epoch = 14, dur = 36.54
+
+Epoch: [15 | 101] LR: 0.001143
+loss = 48.423, lr = 0.001143, acc = 0.570, epoch = 15, dur = 0.00s/it, [0/5005]
+loss = 59.017, lr = 0.001143, acc = 0.543, epoch = 15, dur = 0.00s/it, [1000/5005]
+loss = 65.382, lr = 0.001143, acc = 0.523, epoch = 15, dur = 0.00s/it, [2000/5005]
+loss = 48.533, lr = 0.001143, acc = 0.609, epoch = 15, dur = 0.00s/it, [3000/5005]
+loss = 52.182, lr = 0.001143, acc = 0.590, epoch = 15, dur = 0.00s/it, [4000/5005]
+loss = 49.731, lr = 0.001143, acc = 0.551, epoch = 15, dur = 0.00s/it, [5000/5005]
+avg_loss = 57.276, avg_acc = 0.555, epoch = 15, dur = 35.95
+
+Epoch: [16 | 101] LR: 0.001081
+loss = 55.715, lr = 0.001081, acc = 0.559, epoch = 16, dur = 0.00s/it, [0/5005]
+loss = 48.661, lr = 0.001081, acc = 0.625, epoch = 16, dur = 0.00s/it, [1000/5005]
+loss = 60.175, lr = 0.001081, acc = 0.598, epoch = 16, dur = 0.00s/it, [2000/5005]
+loss = 61.259, lr = 0.001081, acc = 0.566, epoch = 16, dur = 0.00s/it, [3000/5005]
+loss = 51.360, lr = 0.001081, acc = 0.543, epoch = 16, dur = 0.00s/it, [4000/5005]
+loss = 57.893, lr = 0.001081, acc = 0.535, epoch = 16, dur = 0.00s/it, [5000/5005]
+avg_loss = 55.596, avg_acc = 0.559, epoch = 16, dur = 35.37
+
+Epoch: [17 | 101] LR: 0.001026
+loss = 61.786, lr = 0.001026, acc = 0.539, epoch = 17, dur = 0.00s/it, [0/5005]
+loss = 62.666, lr = 0.001026, acc = 0.566, epoch = 17, dur = 0.00s/it, [1000/5005]
+loss = 66.369, lr = 0.001026, acc = 0.527, epoch = 17, dur = 0.00s/it, [2000/5005]
+loss = 58.049, lr = 0.001026, acc = 0.562, epoch = 17, dur = 0.00s/it, [3000/5005]
+loss = 45.771, lr = 0.001026, acc = 0.609, epoch = 17, dur = 0.00s/it, [4000/5005]
+loss = 55.628, lr = 0.001026, acc = 0.512, epoch = 17, dur = 0.00s/it, [5000/5005]
+avg_loss = 54.060, avg_acc = 0.561, epoch = 17, dur = 37.41
+
+Epoch: [18 | 101] LR: 0.000976
+loss = 48.307, lr = 0.000976, acc = 0.566, epoch = 18, dur = 0.00s/it, [0/5005]
+loss = 58.301, lr = 0.000976, acc = 0.555, epoch = 18, dur = 0.00s/it, [1000/5005]
+loss = 42.886, lr = 0.000976, acc = 0.586, epoch = 18, dur = 0.00s/it, [2000/5005]
+loss = 48.740, lr = 0.000976, acc = 0.590, epoch = 18, dur = 0.01s/it, [3000/5005]
+loss = 60.029, lr = 0.000976, acc = 0.527, epoch = 18, dur = 0.00s/it, [4000/5005]
+loss = 71.178, lr = 0.000976, acc = 0.465, epoch = 18, dur = 0.01s/it, [5000/5005]
+avg_loss = 52.661, avg_acc = 0.564, epoch = 18, dur = 37.77
+
+Epoch: [19 | 101] LR: 0.000930
+loss = 58.975, lr = 0.000930, acc = 0.551, epoch = 19, dur = 0.00s/it, [0/5005]
+loss = 48.827, lr = 0.000930, acc = 0.520, epoch = 19, dur = 0.00s/it, [1000/5005]
+loss = 53.839, lr = 0.000930, acc = 0.566, epoch = 19, dur = 0.00s/it, [2000/5005]
+loss = 49.775, lr = 0.000930, acc = 0.586, epoch = 19, dur = 0.00s/it, [3000/5005]
+loss = 49.804, lr = 0.000930, acc = 0.602, epoch = 19, dur = 0.00s/it, [4000/5005]
+loss = 53.831, lr = 0.000930, acc = 0.609, epoch = 19, dur = 0.00s/it, [5000/5005]
+avg_loss = 51.375, avg_acc = 0.566, epoch = 19, dur = 38.04
+
+Epoch: [20 | 101] LR: 0.000889
+loss = 49.112, lr = 0.000889, acc = 0.609, epoch = 20, dur = 0.01s/it, [0/5005]
+loss = 51.890, lr = 0.000889, acc = 0.535, epoch = 20, dur = 0.01s/it, [1000/5005]
+loss = 53.191, lr = 0.000889, acc = 0.535, epoch = 20, dur = 0.00s/it, [2000/5005]
+loss = 48.620, lr = 0.000889, acc = 0.559, epoch = 20, dur = 0.00s/it, [3000/5005]
+loss = 47.201, lr = 0.000889, acc = 0.574, epoch = 20, dur = 0.00s/it, [4000/5005]
+loss = 49.975, lr = 0.000889, acc = 0.555, epoch = 20, dur = 0.00s/it, [5000/5005]
+avg_loss = 50.172, avg_acc = 0.568, epoch = 20, dur = 37.23
+
+Epoch: [21 | 101] LR: 0.000851
+loss = 49.532, lr = 0.000851, acc = 0.578, epoch = 21, dur = 0.00s/it, [0/5005]
+loss = 49.858, lr = 0.000851, acc = 0.570, epoch = 21, dur = 0.00s/it, [1000/5005]
+loss = 49.092, lr = 0.000851, acc = 0.539, epoch = 21, dur = 0.00s/it, [2000/5005]
+loss = 49.162, lr = 0.000851, acc = 0.562, epoch = 21, dur = 0.00s/it, [3000/5005]
+loss = 50.404, lr = 0.000851, acc = 0.574, epoch = 21, dur = 0.00s/it, [4000/5005]
+loss = 50.150, lr = 0.000851, acc = 0.578, epoch = 21, dur = 0.00s/it, [5000/5005]
+avg_loss = 49.063, avg_acc = 0.570, epoch = 21, dur = 36.37
+
+Epoch: [22 | 101] LR: 0.000816
+loss = 46.071, lr = 0.000816, acc = 0.605, epoch = 22, dur = 0.00s/it, [0/5005]
+loss = 53.591, lr = 0.000816, acc = 0.547, epoch = 22, dur = 0.00s/it, [1000/5005]
+loss = 48.902, lr = 0.000816, acc = 0.594, epoch = 22, dur = 0.00s/it, [2000/5005]
+loss = 43.554, lr = 0.000816, acc = 0.590, epoch = 22, dur = 0.00s/it, [3000/5005]
+loss = 50.320, lr = 0.000816, acc = 0.586, epoch = 22, dur = 0.00s/it, [4000/5005]
+loss = 49.544, lr = 0.000816, acc = 0.570, epoch = 22, dur = 0.00s/it, [5000/5005]
+avg_loss = 48.038, avg_acc = 0.573, epoch = 22, dur = 37.51
+
+Epoch: [23 | 101] LR: 0.000784
+loss = 49.549, lr = 0.000784, acc = 0.531, epoch = 23, dur = 0.00s/it, [0/5005]
+loss = 47.278, lr = 0.000784, acc = 0.531, epoch = 23, dur = 0.00s/it, [1000/5005]
+loss = 42.816, lr = 0.000784, acc = 0.586, epoch = 23, dur = 0.00s/it, [2000/5005]
+loss = 44.353, lr = 0.000784, acc = 0.582, epoch = 23, dur = 0.00s/it, [3000/5005]
+loss = 42.107, lr = 0.000784, acc = 0.578, epoch = 23, dur = 0.00s/it, [4000/5005]
+loss = 44.993, lr = 0.000784, acc = 0.566, epoch = 23, dur = 0.00s/it, [5000/5005]
+avg_loss = 47.060, avg_acc = 0.574, epoch = 23, dur = 36.33
+
+Epoch: [24 | 101] LR: 0.000755
+loss = 45.239, lr = 0.000755, acc = 0.559, epoch = 24, dur = 0.00s/it, [0/5005]
+loss = 48.240, lr = 0.000755, acc = 0.594, epoch = 24, dur = 0.00s/it, [1000/5005]
+loss = 49.669, lr = 0.000755, acc = 0.617, epoch = 24, dur = 0.00s/it, [2000/5005]
+loss = 52.475, lr = 0.000755, acc = 0.535, epoch = 24, dur = 0.00s/it, [3000/5005]
+loss = 38.296, lr = 0.000755, acc = 0.609, epoch = 24, dur = 0.00s/it, [4000/5005]
+loss = 44.825, lr = 0.000755, acc = 0.574, epoch = 24, dur = 0.00s/it, [5000/5005]
+avg_loss = 46.159, avg_acc = 0.576, epoch = 24, dur = 35.29
+
+Epoch: [25 | 101] LR: 0.000727
+loss = 45.909, lr = 0.000727, acc = 0.609, epoch = 25, dur = 0.00s/it, [0/5005]
+loss = 43.959, lr = 0.000727, acc = 0.535, epoch = 25, dur = 0.00s/it, [1000/5005]
+loss = 49.880, lr = 0.000727, acc = 0.594, epoch = 25, dur = 0.00s/it, [2000/5005]
+loss = 42.396, lr = 0.000727, acc = 0.582, epoch = 25, dur = 0.00s/it, [3000/5005]
+loss = 37.263, lr = 0.000727, acc = 0.609, epoch = 25, dur = 0.00s/it, [4000/5005]
+loss = 55.560, lr = 0.000727, acc = 0.539, epoch = 25, dur = 0.00s/it, [5000/5005]
+avg_loss = 45.301, avg_acc = 0.578, epoch = 25, dur = 36.61
+
+Epoch: [26 | 101] LR: 0.000702
+loss = 51.237, lr = 0.000702, acc = 0.531, epoch = 26, dur = 0.00s/it, [0/5005]
+loss = 50.148, lr = 0.000702, acc = 0.555, epoch = 26, dur = 0.00s/it, [1000/5005]
+loss = 37.796, lr = 0.000702, acc = 0.609, epoch = 26, dur = 0.00s/it, [2000/5005]
+loss = 47.367, lr = 0.000702, acc = 0.566, epoch = 26, dur = 0.00s/it, [3000/5005]
+loss = 53.821, lr = 0.000702, acc = 0.555, epoch = 26, dur = 0.00s/it, [4000/5005]
+loss = 49.614, lr = 0.000702, acc = 0.555, epoch = 26, dur = 0.00s/it, [5000/5005]
+avg_loss = 44.496, avg_acc = 0.580, epoch = 26, dur = 35.42
+
+Epoch: [27 | 101] LR: 0.000678
+loss = 46.171, lr = 0.000678, acc = 0.586, epoch = 27, dur = 0.01s/it, [0/5005]
+loss = 50.141, lr = 0.000678, acc = 0.602, epoch = 27, dur = 0.00s/it, [1000/5005]
+loss = 39.939, lr = 0.000678, acc = 0.617, epoch = 27, dur = 0.00s/it, [2000/5005]
+loss = 46.833, lr = 0.000678, acc = 0.574, epoch = 27, dur = 0.00s/it, [3000/5005]
+loss = 42.971, lr = 0.000678, acc = 0.617, epoch = 27, dur = 0.00s/it, [4000/5005]
+loss = 49.327, lr = 0.000678, acc = 0.547, epoch = 27, dur = 0.00s/it, [5000/5005]
+avg_loss = 43.740, avg_acc = 0.581, epoch = 27, dur = 35.63
+
+Epoch: [28 | 101] LR: 0.000656
+loss = 30.611, lr = 0.000656, acc = 0.629, epoch = 28, dur = 0.00s/it, [0/5005]
+loss = 39.031, lr = 0.000656, acc = 0.602, epoch = 28, dur = 0.00s/it, [1000/5005]
+loss = 44.328, lr = 0.000656, acc = 0.570, epoch = 28, dur = 0.00s/it, [2000/5005]
+loss = 43.547, lr = 0.000656, acc = 0.547, epoch = 28, dur = 0.00s/it, [3000/5005]
+loss = 43.006, lr = 0.000656, acc = 0.547, epoch = 28, dur = 0.00s/it, [4000/5005]
+loss = 43.015, lr = 0.000656, acc = 0.539, epoch = 28, dur = 0.00s/it, [5000/5005]
+avg_loss = 43.023, avg_acc = 0.583, epoch = 28, dur = 36.27
+
+Epoch: [29 | 101] LR: 0.000635
+loss = 37.417, lr = 0.000635, acc = 0.609, epoch = 29, dur = 0.00s/it, [0/5005]
+loss = 34.838, lr = 0.000635, acc = 0.617, epoch = 29, dur = 0.00s/it, [1000/5005]
+loss = 42.897, lr = 0.000635, acc = 0.562, epoch = 29, dur = 0.00s/it, [2000/5005]
+loss = 46.860, lr = 0.000635, acc = 0.586, epoch = 29, dur = 0.00s/it, [3000/5005]
+loss = 42.274, lr = 0.000635, acc = 0.590, epoch = 29, dur = 0.00s/it, [4000/5005]
+loss = 50.017, lr = 0.000635, acc = 0.547, epoch = 29, dur = 0.00s/it, [5000/5005]
+avg_loss = 42.338, avg_acc = 0.584, epoch = 29, dur = 35.52
+
+Epoch: [30 | 101] LR: 0.000615
+loss = 35.407, lr = 0.000615, acc = 0.566, epoch = 30, dur = 0.01s/it, [0/5005]
+loss = 34.404, lr = 0.000615, acc = 0.594, epoch = 30, dur = 0.00s/it, [1000/5005]
+loss = 40.659, lr = 0.000615, acc = 0.559, epoch = 30, dur = 0.00s/it, [2000/5005]
+loss = 44.196, lr = 0.000615, acc = 0.570, epoch = 30, dur = 0.00s/it, [3000/5005]
+loss = 47.281, lr = 0.000615, acc = 0.566, epoch = 30, dur = 0.00s/it, [4000/5005]
+loss = 40.264, lr = 0.000615, acc = 0.562, epoch = 30, dur = 0.00s/it, [5000/5005]
+avg_loss = 41.698, avg_acc = 0.586, epoch = 30, dur = 35.72
+
+Epoch: [31 | 101] LR: 0.000597
+loss = 42.238, lr = 0.000597, acc = 0.578, epoch = 31, dur = 0.01s/it, [0/5005]
+loss = 31.925, lr = 0.000597, acc = 0.590, epoch = 31, dur = 0.00s/it, [1000/5005]
+loss = 39.173, lr = 0.000597, acc = 0.594, epoch = 31, dur = 0.00s/it, [2000/5005]
+loss = 45.165, lr = 0.000597, acc = 0.574, epoch = 31, dur = 0.00s/it, [3000/5005]
+loss = 41.007, lr = 0.000597, acc = 0.605, epoch = 31, dur = 0.00s/it, [4000/5005]
+loss = 51.426, lr = 0.000597, acc = 0.543, epoch = 31, dur = 0.00s/it, [5000/5005]
+avg_loss = 41.081, avg_acc = 0.587, epoch = 31, dur = 35.30
+
+Epoch: [32 | 101] LR: 0.000580
+loss = 42.427, lr = 0.000580, acc = 0.562, epoch = 32, dur = 0.00s/it, [0/5005]
+loss = 42.493, lr = 0.000580, acc = 0.551, epoch = 32, dur = 0.00s/it, [1000/5005]
+loss = 32.561, lr = 0.000580, acc = 0.605, epoch = 32, dur = 0.01s/it, [2000/5005]
+loss = 42.085, lr = 0.000580, acc = 0.598, epoch = 32, dur = 0.00s/it, [3000/5005]
+loss = 36.442, lr = 0.000580, acc = 0.543, epoch = 32, dur = 0.00s/it, [4000/5005]
+loss = 36.631, lr = 0.000580, acc = 0.621, epoch = 32, dur = 0.01s/it, [5000/5005]
+avg_loss = 40.498, avg_acc = 0.588, epoch = 32, dur = 36.94
+
+Epoch: [33 | 101] LR: 0.000563
+loss = 30.827, lr = 0.000563, acc = 0.652, epoch = 33, dur = 0.00s/it, [0/5005]
+loss = 50.072, lr = 0.000563, acc = 0.531, epoch = 33, dur = 0.00s/it, [1000/5005]
+loss = 40.805, lr = 0.000563, acc = 0.574, epoch = 33, dur = 0.00s/it, [2000/5005]
+loss = 37.811, lr = 0.000563, acc = 0.641, epoch = 33, dur = 0.00s/it, [3000/5005]
+loss = 39.621, lr = 0.000563, acc = 0.605, epoch = 33, dur = 0.00s/it, [4000/5005]
+loss = 34.214, lr = 0.000563, acc = 0.598, epoch = 33, dur = 0.00s/it, [5000/5005]
+avg_loss = 39.930, avg_acc = 0.590, epoch = 33, dur = 36.20
+
+Epoch: [34 | 101] LR: 0.000548
+loss = 39.930, lr = 0.000548, acc = 0.594, epoch = 34, dur = 0.00s/it, [0/5005]
+loss = 35.471, lr = 0.000548, acc = 0.664, epoch = 34, dur = 0.00s/it, [1000/5005]
+loss = 47.713, lr = 0.000548, acc = 0.582, epoch = 34, dur = 0.01s/it, [2000/5005]
+loss = 44.391, lr = 0.000548, acc = 0.582, epoch = 34, dur = 0.00s/it, [3000/5005]
+loss = 39.268, lr = 0.000548, acc = 0.559, epoch = 34, dur = 0.00s/it, [4000/5005]
+loss = 43.259, lr = 0.000548, acc = 0.559, epoch = 34, dur = 0.01s/it, [5000/5005]
+avg_loss = 39.399, avg_acc = 0.591, epoch = 34, dur = 35.67
+
+Epoch: [35 | 101] LR: 0.000533
+loss = 32.220, lr = 0.000533, acc = 0.637, epoch = 35, dur = 0.00s/it, [0/5005]
+loss = 31.396, lr = 0.000533, acc = 0.586, epoch = 35, dur = 0.00s/it, [1000/5005]
+loss = 36.372, lr = 0.000533, acc = 0.645, epoch = 35, dur = 0.00s/it, [2000/5005]
+loss = 38.566, lr = 0.000533, acc = 0.566, epoch = 35, dur = 0.00s/it, [3000/5005]
+loss = 39.117, lr = 0.000533, acc = 0.617, epoch = 35, dur = 0.00s/it, [4000/5005]
+loss = 35.842, lr = 0.000533, acc = 0.586, epoch = 35, dur = 0.00s/it, [5000/5005]
+avg_loss = 38.893, avg_acc = 0.592, epoch = 35, dur = 36.49
+
+Epoch: [36 | 101] LR: 0.000519
+loss = 39.566, lr = 0.000519, acc = 0.562, epoch = 36, dur = 0.00s/it, [0/5005]
+loss = 38.130, lr = 0.000519, acc = 0.609, epoch = 36, dur = 0.00s/it, [1000/5005]
+loss = 26.595, lr = 0.000519, acc = 0.699, epoch = 36, dur = 0.00s/it, [2000/5005]
+loss = 39.235, lr = 0.000519, acc = 0.629, epoch = 36, dur = 0.00s/it, [3000/5005]
+loss = 41.324, lr = 0.000519, acc = 0.590, epoch = 36, dur = 0.00s/it, [4000/5005]
+loss = 35.637, lr = 0.000519, acc = 0.582, epoch = 36, dur = 0.00s/it, [5000/5005]
+avg_loss = 38.399, avg_acc = 0.593, epoch = 36, dur = 35.30
+
+Epoch: [37 | 101] LR: 0.000506
+loss = 32.122, lr = 0.000506, acc = 0.613, epoch = 37, dur = 0.00s/it, [0/5005]
+loss = 38.590, lr = 0.000506, acc = 0.574, epoch = 37, dur = 0.00s/it, [1000/5005]
+loss = 32.997, lr = 0.000506, acc = 0.621, epoch = 37, dur = 0.00s/it, [2000/5005]
+loss = 37.645, lr = 0.000506, acc = 0.625, epoch = 37, dur = 0.00s/it, [3000/5005]
+loss = 37.940, lr = 0.000506, acc = 0.629, epoch = 37, dur = 0.00s/it, [4000/5005]
+loss = 49.256, lr = 0.000506, acc = 0.586, epoch = 37, dur = 0.00s/it, [5000/5005]
+avg_loss = 37.924, avg_acc = 0.594, epoch = 37, dur = 35.85
+
+Epoch: [38 | 101] LR: 0.000494
+loss = 39.053, lr = 0.000494, acc = 0.590, epoch = 38, dur = 0.00s/it, [0/5005]
+loss = 37.520, lr = 0.000494, acc = 0.598, epoch = 38, dur = 0.00s/it, [1000/5005]
+loss = 40.546, lr = 0.000494, acc = 0.605, epoch = 38, dur = 0.00s/it, [2000/5005]
+loss = 32.630, lr = 0.000494, acc = 0.605, epoch = 38, dur = 0.00s/it, [3000/5005]
+loss = 27.436, lr = 0.000494, acc = 0.605, epoch = 38, dur = 0.00s/it, [4000/5005]
+loss = 38.312, lr = 0.000494, acc = 0.551, epoch = 38, dur = 0.00s/it, [5000/5005]
+avg_loss = 37.480, avg_acc = 0.595, epoch = 38, dur = 35.00
+
+Epoch: [39 | 101] LR: 0.000482
+loss = 42.941, lr = 0.000482, acc = 0.625, epoch = 39, dur = 0.01s/it, [0/5005]
+loss = 40.752, lr = 0.000482, acc = 0.586, epoch = 39, dur = 0.00s/it, [1000/5005]
+loss = 40.578, lr = 0.000482, acc = 0.594, epoch = 39, dur = 0.00s/it, [2000/5005]
+loss = 34.193, lr = 0.000482, acc = 0.613, epoch = 39, dur = 0.00s/it, [3000/5005]
+loss = 36.646, lr = 0.000482, acc = 0.617, epoch = 39, dur = 0.01s/it, [4000/5005]
+loss = 33.059, lr = 0.000482, acc = 0.598, epoch = 39, dur = 0.00s/it, [5000/5005]
+avg_loss = 37.044, avg_acc = 0.597, epoch = 39, dur = 35.57
+
+Epoch: [40 | 101] LR: 0.000471
+loss = 33.122, lr = 0.000471, acc = 0.605, epoch = 40, dur = 0.01s/it, [0/5005]
+loss = 40.002, lr = 0.000471, acc = 0.598, epoch = 40, dur = 0.00s/it, [1000/5005]
+loss = 35.330, lr = 0.000471, acc = 0.578, epoch = 40, dur = 0.00s/it, [2000/5005]
+loss = 34.740, lr = 0.000471, acc = 0.598, epoch = 40, dur = 0.00s/it, [3000/5005]
+loss = 32.567, lr = 0.000471, acc = 0.609, epoch = 40, dur = 0.00s/it, [4000/5005]
+loss = 40.000, lr = 0.000471, acc = 0.590, epoch = 40, dur = 0.00s/it, [5000/5005]
+avg_loss = 36.629, avg_acc = 0.597, epoch = 40, dur = 35.18
+
+Epoch: [41 | 101] LR: 0.000460
+loss = 32.307, lr = 0.000460, acc = 0.652, epoch = 41, dur = 0.00s/it, [0/5005]
+loss = 48.055, lr = 0.000460, acc = 0.559, epoch = 41, dur = 0.00s/it, [1000/5005]
+loss = 38.796, lr = 0.000460, acc = 0.609, epoch = 41, dur = 0.00s/it, [2000/5005]
+loss = 27.759, lr = 0.000460, acc = 0.664, epoch = 41, dur = 0.00s/it, [3000/5005]
+loss = 38.908, lr = 0.000460, acc = 0.629, epoch = 41, dur = 0.00s/it, [4000/5005]
+loss = 31.488, lr = 0.000460, acc = 0.625, epoch = 41, dur = 0.00s/it, [5000/5005]
+avg_loss = 36.224, avg_acc = 0.598, epoch = 41, dur = 35.29
+
+Epoch: [42 | 101] LR: 0.000449
+loss = 33.707, lr = 0.000449, acc = 0.652, epoch = 42, dur = 0.00s/it, [0/5005]
+loss = 30.408, lr = 0.000449, acc = 0.625, epoch = 42, dur = 0.00s/it, [1000/5005]
+loss = 38.202, lr = 0.000449, acc = 0.559, epoch = 42, dur = 0.00s/it, [2000/5005]
+loss = 32.582, lr = 0.000449, acc = 0.629, epoch = 42, dur = 0.00s/it, [3000/5005]
+loss = 27.717, lr = 0.000449, acc = 0.613, epoch = 42, dur = 0.00s/it, [4000/5005]
+loss = 31.446, lr = 0.000449, acc = 0.578, epoch = 42, dur = 0.00s/it, [5000/5005]
+avg_loss = 35.839, avg_acc = 0.599, epoch = 42, dur = 33.25
+
+Epoch: [43 | 101] LR: 0.000440
+loss = 38.015, lr = 0.000440, acc = 0.629, epoch = 43, dur = 0.00s/it, [0/5005]
+loss = 29.339, lr = 0.000440, acc = 0.633, epoch = 43, dur = 0.00s/it, [1000/5005]
+loss = 34.389, lr = 0.000440, acc = 0.582, epoch = 43, dur = 0.00s/it, [2000/5005]
+loss = 31.972, lr = 0.000440, acc = 0.633, epoch = 43, dur = 0.00s/it, [3000/5005]
+loss = 41.023, lr = 0.000440, acc = 0.531, epoch = 43, dur = 0.00s/it, [4000/5005]
+loss = 30.341, lr = 0.000440, acc = 0.680, epoch = 43, dur = 0.00s/it, [5000/5005]
+avg_loss = 35.468, avg_acc = 0.600, epoch = 43, dur = 34.91
+
+Epoch: [44 | 101] LR: 0.000430
+loss = 38.628, lr = 0.000430, acc = 0.551, epoch = 44, dur = 0.00s/it, [0/5005]
+loss = 40.768, lr = 0.000430, acc = 0.562, epoch = 44, dur = 0.00s/it, [1000/5005]
+loss = 36.256, lr = 0.000430, acc = 0.586, epoch = 44, dur = 0.00s/it, [2000/5005]
+loss = 38.424, lr = 0.000430, acc = 0.531, epoch = 44, dur = 0.00s/it, [3000/5005]
+loss = 37.141, lr = 0.000430, acc = 0.613, epoch = 44, dur = 0.00s/it, [4000/5005]
+loss = 33.220, lr = 0.000430, acc = 0.605, epoch = 44, dur = 0.01s/it, [5000/5005]
+avg_loss = 35.101, avg_acc = 0.601, epoch = 44, dur = 36.88
+
+Epoch: [45 | 101] LR: 0.000421
+loss = 26.964, lr = 0.000421, acc = 0.633, epoch = 45, dur = 0.00s/it, [0/5005]
+loss = 38.392, lr = 0.000421, acc = 0.562, epoch = 45, dur = 0.00s/it, [1000/5005]
+loss = 32.751, lr = 0.000421, acc = 0.598, epoch = 45, dur = 0.00s/it, [2000/5005]
+loss = 36.769, lr = 0.000421, acc = 0.625, epoch = 45, dur = 0.00s/it, [3000/5005]
+loss = 35.265, lr = 0.000421, acc = 0.613, epoch = 45, dur = 0.00s/it, [4000/5005]
+loss = 28.524, lr = 0.000421, acc = 0.617, epoch = 45, dur = 0.00s/it, [5000/5005]
+avg_loss = 34.753, avg_acc = 0.602, epoch = 45, dur = 36.40
+
+Epoch: [46 | 101] LR: 0.000412
+loss = 33.194, lr = 0.000412, acc = 0.594, epoch = 46, dur = 0.00s/it, [0/5005]
+loss = 30.603, lr = 0.000412, acc = 0.652, epoch = 46, dur = 0.00s/it, [1000/5005]
+loss = 39.833, lr = 0.000412, acc = 0.570, epoch = 46, dur = 0.00s/it, [2000/5005]
+loss = 32.200, lr = 0.000412, acc = 0.605, epoch = 46, dur = 0.00s/it, [3000/5005]
+loss = 39.873, lr = 0.000412, acc = 0.574, epoch = 46, dur = 0.00s/it, [4000/5005]
+loss = 45.012, lr = 0.000412, acc = 0.566, epoch = 46, dur = 0.00s/it, [5000/5005]
+avg_loss = 34.418, avg_acc = 0.603, epoch = 46, dur = 35.32
+
+Epoch: [47 | 101] LR: 0.000404
+loss = 29.370, lr = 0.000404, acc = 0.617, epoch = 47, dur = 0.00s/it, [0/5005]
+loss = 30.968, lr = 0.000404, acc = 0.625, epoch = 47, dur = 0.00s/it, [1000/5005]
+loss = 37.457, lr = 0.000404, acc = 0.625, epoch = 47, dur = 0.00s/it, [2000/5005]
+loss = 32.017, lr = 0.000404, acc = 0.605, epoch = 47, dur = 0.00s/it, [3000/5005]
+loss = 31.195, lr = 0.000404, acc = 0.562, epoch = 47, dur = 0.00s/it, [4000/5005]
+loss = 37.164, lr = 0.000404, acc = 0.562, epoch = 47, dur = 0.00s/it, [5000/5005]
+avg_loss = 34.094, avg_acc = 0.604, epoch = 47, dur = 35.55
+
+Epoch: [48 | 101] LR: 0.000396
+loss = 35.587, lr = 0.000396, acc = 0.602, epoch = 48, dur = 0.00s/it, [0/5005]
+loss = 33.771, lr = 0.000396, acc = 0.586, epoch = 48, dur = 0.00s/it, [1000/5005]
+loss = 33.812, lr = 0.000396, acc = 0.605, epoch = 48, dur = 0.00s/it, [2000/5005]
+loss = 33.778, lr = 0.000396, acc = 0.625, epoch = 48, dur = 0.00s/it, [3000/5005]
+loss = 29.266, lr = 0.000396, acc = 0.594, epoch = 48, dur = 0.00s/it, [4000/5005]
+loss = 34.873, lr = 0.000396, acc = 0.617, epoch = 48, dur = 0.00s/it, [5000/5005]
+avg_loss = 33.775, avg_acc = 0.604, epoch = 48, dur = 35.02
+
+Epoch: [49 | 101] LR: 0.000388
+loss = 41.455, lr = 0.000388, acc = 0.605, epoch = 49, dur = 0.00s/it, [0/5005]
+loss = 29.127, lr = 0.000388, acc = 0.668, epoch = 49, dur = 0.00s/it, [1000/5005]
+loss = 36.537, lr = 0.000388, acc = 0.602, epoch = 49, dur = 0.00s/it, [2000/5005]
+loss = 35.326, lr = 0.000388, acc = 0.617, epoch = 49, dur = 0.00s/it, [3000/5005]
+loss = 31.400, lr = 0.000388, acc = 0.652, epoch = 49, dur = 0.00s/it, [4000/5005]
+loss = 34.087, lr = 0.000388, acc = 0.609, epoch = 49, dur = 0.00s/it, [5000/5005]
+avg_loss = 33.472, avg_acc = 0.605, epoch = 49, dur = 36.18
+
+Epoch: [50 | 101] LR: 0.000381
+loss = 36.192, lr = 0.000381, acc = 0.602, epoch = 50, dur = 0.00s/it, [0/5005]
+loss = 22.030, lr = 0.000381, acc = 0.664, epoch = 50, dur = 0.00s/it, [1000/5005]
+loss = 30.727, lr = 0.000381, acc = 0.648, epoch = 50, dur = 0.00s/it, [2000/5005]
+loss = 33.223, lr = 0.000381, acc = 0.586, epoch = 50, dur = 0.01s/it, [3000/5005]
+loss = 26.083, lr = 0.000381, acc = 0.617, epoch = 50, dur = 0.00s/it, [4000/5005]
+loss = 40.073, lr = 0.000381, acc = 0.586, epoch = 50, dur = 0.00s/it, [5000/5005]
+avg_loss = 33.170, avg_acc = 0.606, epoch = 50, dur = 35.38
+
+Epoch: [51 | 101] LR: 0.000374
+loss = 30.506, lr = 0.000374, acc = 0.594, epoch = 51, dur = 0.00s/it, [0/5005]
+loss = 34.993, lr = 0.000374, acc = 0.605, epoch = 51, dur = 0.00s/it, [1000/5005]
+loss = 41.442, lr = 0.000374, acc = 0.574, epoch = 51, dur = 0.00s/it, [2000/5005]
+loss = 32.582, lr = 0.000374, acc = 0.574, epoch = 51, dur = 0.00s/it, [3000/5005]
+loss = 37.275, lr = 0.000374, acc = 0.602, epoch = 51, dur = 0.00s/it, [4000/5005]
+loss = 38.168, lr = 0.000374, acc = 0.594, epoch = 51, dur = 0.00s/it, [5000/5005]
+avg_loss = 32.883, avg_acc = 0.607, epoch = 51, dur = 36.10
+
+Epoch: [52 | 101] LR: 0.000367
+loss = 38.039, lr = 0.000367, acc = 0.598, epoch = 52, dur = 0.00s/it, [0/5005]
+loss = 29.428, lr = 0.000367, acc = 0.648, epoch = 52, dur = 0.01s/it, [1000/5005]
+loss = 34.898, lr = 0.000367, acc = 0.633, epoch = 52, dur = 0.00s/it, [2000/5005]
+loss = 26.965, lr = 0.000367, acc = 0.617, epoch = 52, dur = 0.00s/it, [3000/5005]
+loss = 30.000, lr = 0.000367, acc = 0.613, epoch = 52, dur = 0.00s/it, [4000/5005]
+loss = 26.890, lr = 0.000367, acc = 0.641, epoch = 52, dur = 0.00s/it, [5000/5005]
+avg_loss = 32.595, avg_acc = 0.608, epoch = 52, dur = 35.67
+
+Epoch: [53 | 101] LR: 0.000360
+loss = 34.215, lr = 0.000360, acc = 0.562, epoch = 53, dur = 0.00s/it, [0/5005]
+loss = 33.124, lr = 0.000360, acc = 0.680, epoch = 53, dur = 0.00s/it, [1000/5005]
+loss = 33.449, lr = 0.000360, acc = 0.637, epoch = 53, dur = 0.00s/it, [2000/5005]
+loss = 36.197, lr = 0.000360, acc = 0.613, epoch = 53, dur = 0.00s/it, [3000/5005]
+loss = 26.538, lr = 0.000360, acc = 0.637, epoch = 53, dur = 0.00s/it, [4000/5005]
+loss = 30.135, lr = 0.000360, acc = 0.578, epoch = 53, dur = 0.00s/it, [5000/5005]
+avg_loss = 32.331, avg_acc = 0.608, epoch = 53, dur = 36.49
+
+Epoch: [54 | 101] LR: 0.000354
+loss = 28.208, lr = 0.000354, acc = 0.605, epoch = 54, dur = 0.00s/it, [0/5005]
+loss = 42.612, lr = 0.000354, acc = 0.527, epoch = 54, dur = 0.00s/it, [1000/5005]
+loss = 32.531, lr = 0.000354, acc = 0.605, epoch = 54, dur = 0.00s/it, [2000/5005]
+loss = 31.740, lr = 0.000354, acc = 0.598, epoch = 54, dur = 0.00s/it, [3000/5005]
+loss = 30.265, lr = 0.000354, acc = 0.609, epoch = 54, dur = 0.00s/it, [4000/5005]
+loss = 34.467, lr = 0.000354, acc = 0.594, epoch = 54, dur = 0.00s/it, [5000/5005]
+avg_loss = 32.068, avg_acc = 0.609, epoch = 54, dur = 35.07
+
+Epoch: [55 | 101] LR: 0.000348
+loss = 29.563, lr = 0.000348, acc = 0.621, epoch = 55, dur = 0.00s/it, [0/5005]
+loss = 28.079, lr = 0.000348, acc = 0.637, epoch = 55, dur = 0.00s/it, [1000/5005]
+loss = 31.962, lr = 0.000348, acc = 0.605, epoch = 55, dur = 0.00s/it, [2000/5005]
+loss = 33.010, lr = 0.000348, acc = 0.582, epoch = 55, dur = 0.00s/it, [3000/5005]
+loss = 29.154, lr = 0.000348, acc = 0.648, epoch = 55, dur = 0.00s/it, [4000/5005]
+loss = 39.626, lr = 0.000348, acc = 0.547, epoch = 55, dur = 0.00s/it, [5000/5005]
+avg_loss = 31.809, avg_acc = 0.610, epoch = 55, dur = 36.74
+
+Epoch: [56 | 101] LR: 0.000342
+loss = 28.199, lr = 0.000342, acc = 0.625, epoch = 56, dur = 0.00s/it, [0/5005]
+loss = 33.125, lr = 0.000342, acc = 0.664, epoch = 56, dur = 0.00s/it, [1000/5005]
+loss = 30.931, lr = 0.000342, acc = 0.594, epoch = 56, dur = 0.00s/it, [2000/5005]
+loss = 37.297, lr = 0.000342, acc = 0.594, epoch = 56, dur = 0.01s/it, [3000/5005]
+loss = 28.321, lr = 0.000342, acc = 0.617, epoch = 56, dur = 0.00s/it, [4000/5005]
+loss = 32.384, lr = 0.000342, acc = 0.613, epoch = 56, dur = 0.00s/it, [5000/5005]
+avg_loss = 31.559, avg_acc = 0.611, epoch = 56, dur = 36.56
+
+Epoch: [57 | 101] LR: 0.000336
+loss = 33.041, lr = 0.000336, acc = 0.625, epoch = 57, dur = 0.01s/it, [0/5005]
+loss = 31.481, lr = 0.000336, acc = 0.645, epoch = 57, dur = 0.00s/it, [1000/5005]
+loss = 31.467, lr = 0.000336, acc = 0.598, epoch = 57, dur = 0.00s/it, [2000/5005]
+loss = 31.884, lr = 0.000336, acc = 0.660, epoch = 57, dur = 0.00s/it, [3000/5005]
+loss = 29.605, lr = 0.000336, acc = 0.602, epoch = 57, dur = 0.00s/it, [4000/5005]
+loss = 28.581, lr = 0.000336, acc = 0.633, epoch = 57, dur = 0.00s/it, [5000/5005]
+avg_loss = 31.313, avg_acc = 0.611, epoch = 57, dur = 34.92
+
+Epoch: [58 | 101] LR: 0.000331
+loss = 37.357, lr = 0.000331, acc = 0.598, epoch = 58, dur = 0.01s/it, [0/5005]
+loss = 38.914, lr = 0.000331, acc = 0.594, epoch = 58, dur = 0.00s/it, [1000/5005]
+loss = 29.863, lr = 0.000331, acc = 0.586, epoch = 58, dur = 0.00s/it, [2000/5005]
+loss = 33.316, lr = 0.000331, acc = 0.609, epoch = 58, dur = 0.00s/it, [3000/5005]
+loss = 29.689, lr = 0.000331, acc = 0.594, epoch = 58, dur = 0.01s/it, [4000/5005]
+loss = 33.066, lr = 0.000331, acc = 0.617, epoch = 58, dur = 0.01s/it, [5000/5005]
+avg_loss = 31.078, avg_acc = 0.612, epoch = 58, dur = 40.16
+
+Epoch: [59 | 101] LR: 0.000325
+loss = 29.326, lr = 0.000325, acc = 0.645, epoch = 59, dur = 0.01s/it, [0/5005]
+loss = 28.797, lr = 0.000325, acc = 0.617, epoch = 59, dur = 0.00s/it, [1000/5005]
+loss = 30.353, lr = 0.000325, acc = 0.605, epoch = 59, dur = 0.00s/it, [2000/5005]
+loss = 28.296, lr = 0.000325, acc = 0.598, epoch = 59, dur = 0.00s/it, [3000/5005]
+loss = 22.568, lr = 0.000325, acc = 0.637, epoch = 59, dur = 0.00s/it, [4000/5005]
+loss = 20.079, lr = 0.000325, acc = 0.664, epoch = 59, dur = 0.00s/it, [5000/5005]
+avg_loss = 30.846, avg_acc = 0.612, epoch = 59, dur = 41.07
+
+Epoch: [60 | 101] LR: 0.000320
+loss = 27.601, lr = 0.000320, acc = 0.594, epoch = 60, dur = 0.00s/it, [0/5005]
+loss = 33.858, lr = 0.000320, acc = 0.598, epoch = 60, dur = 0.01s/it, [1000/5005]
+loss = 34.909, lr = 0.000320, acc = 0.570, epoch = 60, dur = 0.01s/it, [2000/5005]
+loss = 26.031, lr = 0.000320, acc = 0.613, epoch = 60, dur = 0.00s/it, [3000/5005]
+loss = 28.939, lr = 0.000320, acc = 0.582, epoch = 60, dur = 0.00s/it, [4000/5005]
+loss = 33.632, lr = 0.000320, acc = 0.590, epoch = 60, dur = 0.00s/it, [5000/5005]
+avg_loss = 30.621, avg_acc = 0.613, epoch = 60, dur = 38.49
+
+Epoch: [61 | 101] LR: 0.000315
+loss = 24.947, lr = 0.000315, acc = 0.629, epoch = 61, dur = 0.00s/it, [0/5005]
+loss = 30.447, lr = 0.000315, acc = 0.629, epoch = 61, dur = 0.00s/it, [1000/5005]
+loss = 37.459, lr = 0.000315, acc = 0.598, epoch = 61, dur = 0.00s/it, [2000/5005]
+loss = 32.367, lr = 0.000315, acc = 0.594, epoch = 61, dur = 0.00s/it, [3000/5005]
+loss = 33.853, lr = 0.000315, acc = 0.648, epoch = 61, dur = 0.00s/it, [4000/5005]
+loss = 37.514, lr = 0.000315, acc = 0.586, epoch = 61, dur = 0.00s/it, [5000/5005]
+avg_loss = 30.404, avg_acc = 0.613, epoch = 61, dur = 39.65
+
+Epoch: [62 | 101] LR: 0.000310
+loss = 25.559, lr = 0.000310, acc = 0.645, epoch = 62, dur = 0.00s/it, [0/5005]
+loss = 24.237, lr = 0.000310, acc = 0.594, epoch = 62, dur = 0.00s/it, [1000/5005]
+loss = 30.575, lr = 0.000310, acc = 0.590, epoch = 62, dur = 0.00s/it, [2000/5005]
+loss = 28.652, lr = 0.000310, acc = 0.613, epoch = 62, dur = 0.00s/it, [3000/5005]
+loss = 32.069, lr = 0.000310, acc = 0.629, epoch = 62, dur = 0.00s/it, [4000/5005]
+loss = 28.415, lr = 0.000310, acc = 0.602, epoch = 62, dur = 0.00s/it, [5000/5005]
+avg_loss = 30.190, avg_acc = 0.614, epoch = 62, dur = 38.45
+
+Epoch: [63 | 101] LR: 0.000305
+loss = 30.013, lr = 0.000305, acc = 0.645, epoch = 63, dur = 0.00s/it, [0/5005]
+loss = 34.417, lr = 0.000305, acc = 0.617, epoch = 63, dur = 0.00s/it, [1000/5005]
+loss = 32.400, lr = 0.000305, acc = 0.582, epoch = 63, dur = 0.00s/it, [2000/5005]
+loss = 25.117, lr = 0.000305, acc = 0.598, epoch = 63, dur = 0.00s/it, [3000/5005]
+loss = 33.879, lr = 0.000305, acc = 0.594, epoch = 63, dur = 0.00s/it, [4000/5005]
+loss = 33.332, lr = 0.000305, acc = 0.566, epoch = 63, dur = 0.00s/it, [5000/5005]
+avg_loss = 29.977, avg_acc = 0.615, epoch = 63, dur = 39.93
+
+Epoch: [64 | 101] LR: 0.000301
+loss = 28.584, lr = 0.000301, acc = 0.625, epoch = 64, dur = 0.00s/it, [0/5005]
+loss = 25.483, lr = 0.000301, acc = 0.617, epoch = 64, dur = 0.00s/it, [1000/5005]
+loss = 36.833, lr = 0.000301, acc = 0.598, epoch = 64, dur = 0.00s/it, [2000/5005]
+loss = 31.444, lr = 0.000301, acc = 0.605, epoch = 64, dur = 0.00s/it, [3000/5005]
+loss = 28.006, lr = 0.000301, acc = 0.680, epoch = 64, dur = 0.00s/it, [4000/5005]
+loss = 31.733, lr = 0.000301, acc = 0.609, epoch = 64, dur = 0.00s/it, [5000/5005]
+avg_loss = 29.771, avg_acc = 0.615, epoch = 64, dur = 39.57
+
+Epoch: [65 | 101] LR: 0.000296
+loss = 32.733, lr = 0.000296, acc = 0.586, epoch = 65, dur = 0.01s/it, [0/5005]
+loss = 25.280, lr = 0.000296, acc = 0.637, epoch = 65, dur = 0.00s/it, [1000/5005]
+loss = 37.846, lr = 0.000296, acc = 0.582, epoch = 65, dur = 0.00s/it, [2000/5005]
+loss = 37.435, lr = 0.000296, acc = 0.590, epoch = 65, dur = 0.00s/it, [3000/5005]
+loss = 30.154, lr = 0.000296, acc = 0.609, epoch = 65, dur = 0.00s/it, [4000/5005]
+loss = 23.616, lr = 0.000296, acc = 0.633, epoch = 65, dur = 0.00s/it, [5000/5005]
+avg_loss = 29.571, avg_acc = 0.616, epoch = 65, dur = 39.92
+
+Epoch: [66 | 101] LR: 0.000292
+loss = 23.509, lr = 0.000292, acc = 0.609, epoch = 66, dur = 0.00s/it, [0/5005]
+loss = 29.545, lr = 0.000292, acc = 0.621, epoch = 66, dur = 0.01s/it, [1000/5005]
+loss = 26.269, lr = 0.000292, acc = 0.641, epoch = 66, dur = 0.00s/it, [2000/5005]
+loss = 32.369, lr = 0.000292, acc = 0.602, epoch = 66, dur = 0.00s/it, [3000/5005]
+loss = 32.213, lr = 0.000292, acc = 0.633, epoch = 66, dur = 0.00s/it, [4000/5005]
+loss = 27.877, lr = 0.000292, acc = 0.590, epoch = 66, dur = 0.00s/it, [5000/5005]
+avg_loss = 29.377, avg_acc = 0.616, epoch = 66, dur = 39.78
+
+Epoch: [67 | 101] LR: 0.000288
+loss = 26.624, lr = 0.000288, acc = 0.629, epoch = 67, dur = 0.00s/it, [0/5005]
+loss = 28.562, lr = 0.000288, acc = 0.621, epoch = 67, dur = 0.00s/it, [1000/5005]
+loss = 24.970, lr = 0.000288, acc = 0.648, epoch = 67, dur = 0.00s/it, [2000/5005]
+loss = 34.307, lr = 0.000288, acc = 0.574, epoch = 67, dur = 0.00s/it, [3000/5005]
+loss = 27.188, lr = 0.000288, acc = 0.582, epoch = 67, dur = 0.00s/it, [4000/5005]
+loss = 32.944, lr = 0.000288, acc = 0.586, epoch = 67, dur = 0.00s/it, [5000/5005]
+avg_loss = 29.188, avg_acc = 0.617, epoch = 67, dur = 39.53
+
+Epoch: [68 | 101] LR: 0.000284
+loss = 30.999, lr = 0.000284, acc = 0.625, epoch = 68, dur = 0.00s/it, [0/5005]
+loss = 25.901, lr = 0.000284, acc = 0.605, epoch = 68, dur = 0.00s/it, [1000/5005]
+loss = 27.784, lr = 0.000284, acc = 0.621, epoch = 68, dur = 0.00s/it, [2000/5005]
+loss = 29.171, lr = 0.000284, acc = 0.605, epoch = 68, dur = 0.00s/it, [3000/5005]
+loss = 22.085, lr = 0.000284, acc = 0.656, epoch = 68, dur = 0.00s/it, [4000/5005]
+loss = 25.237, lr = 0.000284, acc = 0.641, epoch = 68, dur = 0.00s/it, [5000/5005]
+avg_loss = 28.998, avg_acc = 0.617, epoch = 68, dur = 40.60
+
+Epoch: [69 | 101] LR: 0.000280
+loss = 26.773, lr = 0.000280, acc = 0.613, epoch = 69, dur = 0.00s/it, [0/5005]
+loss = 26.373, lr = 0.000280, acc = 0.605, epoch = 69, dur = 0.00s/it, [1000/5005]
+loss = 32.039, lr = 0.000280, acc = 0.586, epoch = 69, dur = 0.00s/it, [2000/5005]
+loss = 28.279, lr = 0.000280, acc = 0.582, epoch = 69, dur = 0.00s/it, [3000/5005]
+loss = 28.273, lr = 0.000280, acc = 0.621, epoch = 69, dur = 0.00s/it, [4000/5005]
+loss = 32.692, lr = 0.000280, acc = 0.602, epoch = 69, dur = 0.00s/it, [5000/5005]
+avg_loss = 28.817, avg_acc = 0.618, epoch = 69, dur = 38.21
+
+Epoch: [70 | 101] LR: 0.000276
+loss = 32.644, lr = 0.000276, acc = 0.605, epoch = 70, dur = 0.00s/it, [0/5005]
+loss = 21.928, lr = 0.000276, acc = 0.656, epoch = 70, dur = 0.00s/it, [1000/5005]
+loss = 33.775, lr = 0.000276, acc = 0.527, epoch = 70, dur = 0.00s/it, [2000/5005]
+loss = 30.545, lr = 0.000276, acc = 0.598, epoch = 70, dur = 0.00s/it, [3000/5005]
+loss = 32.265, lr = 0.000276, acc = 0.613, epoch = 70, dur = 0.00s/it, [4000/5005]
+loss = 33.625, lr = 0.000276, acc = 0.605, epoch = 70, dur = 0.00s/it, [5000/5005]
+avg_loss = 28.640, avg_acc = 0.619, epoch = 70, dur = 39.68
+
+Epoch: [71 | 101] LR: 0.000272
+loss = 30.083, lr = 0.000272, acc = 0.617, epoch = 71, dur = 0.00s/it, [0/5005]
+loss = 27.483, lr = 0.000272, acc = 0.637, epoch = 71, dur = 0.01s/it, [1000/5005]
+loss = 31.517, lr = 0.000272, acc = 0.645, epoch = 71, dur = 0.00s/it, [2000/5005]
+loss = 31.476, lr = 0.000272, acc = 0.633, epoch = 71, dur = 0.00s/it, [3000/5005]
+loss = 25.021, lr = 0.000272, acc = 0.609, epoch = 71, dur = 0.00s/it, [4000/5005]
+loss = 31.544, lr = 0.000272, acc = 0.602, epoch = 71, dur = 0.00s/it, [5000/5005]
+avg_loss = 28.461, avg_acc = 0.619, epoch = 71, dur = 39.00
+
+Epoch: [72 | 101] LR: 0.000268
+loss = 24.809, lr = 0.000268, acc = 0.629, epoch = 72, dur = 0.00s/it, [0/5005]
+loss = 33.160, lr = 0.000268, acc = 0.594, epoch = 72, dur = 0.00s/it, [1000/5005]
+loss = 33.639, lr = 0.000268, acc = 0.562, epoch = 72, dur = 0.00s/it, [2000/5005]
+loss = 24.004, lr = 0.000268, acc = 0.605, epoch = 72, dur = 0.00s/it, [3000/5005]
+loss = 25.246, lr = 0.000268, acc = 0.613, epoch = 72, dur = 0.00s/it, [4000/5005]
+loss = 24.025, lr = 0.000268, acc = 0.629, epoch = 72, dur = 0.00s/it, [5000/5005]
+avg_loss = 28.291, avg_acc = 0.620, epoch = 72, dur = 38.69
+
+Epoch: [73 | 101] LR: 0.000265
+loss = 32.715, lr = 0.000265, acc = 0.637, epoch = 73, dur = 0.00s/it, [0/5005]
+loss = 28.877, lr = 0.000265, acc = 0.613, epoch = 73, dur = 0.00s/it, [1000/5005]
+loss = 29.715, lr = 0.000265, acc = 0.598, epoch = 73, dur = 0.00s/it, [2000/5005]
+loss = 27.535, lr = 0.000265, acc = 0.645, epoch = 73, dur = 0.00s/it, [3000/5005]
+loss = 31.801, lr = 0.000265, acc = 0.621, epoch = 73, dur = 0.00s/it, [4000/5005]
+loss = 27.410, lr = 0.000265, acc = 0.652, epoch = 73, dur = 0.00s/it, [5000/5005]
+avg_loss = 28.125, avg_acc = 0.621, epoch = 73, dur = 38.51
+
+Epoch: [74 | 101] LR: 0.000261
+loss = 21.242, lr = 0.000261, acc = 0.691, epoch = 74, dur = 0.00s/it, [0/5005]
+loss = 27.322, lr = 0.000261, acc = 0.617, epoch = 74, dur = 0.00s/it, [1000/5005]
+loss = 25.794, lr = 0.000261, acc = 0.633, epoch = 74, dur = 0.00s/it, [2000/5005]
+loss = 25.851, lr = 0.000261, acc = 0.621, epoch = 74, dur = 0.01s/it, [3000/5005]
+loss = 25.389, lr = 0.000261, acc = 0.633, epoch = 74, dur = 0.00s/it, [4000/5005]
+loss = 25.013, lr = 0.000261, acc = 0.656, epoch = 74, dur = 0.00s/it, [5000/5005]
+avg_loss = 27.959, avg_acc = 0.621, epoch = 74, dur = 38.95
+
+Epoch: [75 | 101] LR: 0.000258
+loss = 20.797, lr = 0.000258, acc = 0.645, epoch = 75, dur = 0.00s/it, [0/5005]
+loss = 28.142, lr = 0.000258, acc = 0.629, epoch = 75, dur = 0.00s/it, [1000/5005]
+loss = 26.226, lr = 0.000258, acc = 0.637, epoch = 75, dur = 0.00s/it, [2000/5005]
+loss = 28.722, lr = 0.000258, acc = 0.625, epoch = 75, dur = 0.00s/it, [3000/5005]
+loss = 26.179, lr = 0.000258, acc = 0.602, epoch = 75, dur = 0.00s/it, [4000/5005]
+loss = 29.329, lr = 0.000258, acc = 0.668, epoch = 75, dur = 0.00s/it, [5000/5005]
+avg_loss = 27.797, avg_acc = 0.621, epoch = 75, dur = 38.05
+
+Epoch: [76 | 101] LR: 0.000255
+loss = 28.267, lr = 0.000255, acc = 0.613, epoch = 76, dur = 0.00s/it, [0/5005]
+loss = 28.774, lr = 0.000255, acc = 0.641, epoch = 76, dur = 0.00s/it, [1000/5005]
+loss = 26.668, lr = 0.000255, acc = 0.637, epoch = 76, dur = 0.00s/it, [2000/5005]
+loss = 24.430, lr = 0.000255, acc = 0.648, epoch = 76, dur = 0.00s/it, [3000/5005]
+loss = 28.446, lr = 0.000255, acc = 0.578, epoch = 76, dur = 0.00s/it, [4000/5005]
+loss = 26.111, lr = 0.000255, acc = 0.633, epoch = 76, dur = 0.00s/it, [5000/5005]
+avg_loss = 27.637, avg_acc = 0.622, epoch = 76, dur = 35.63
+
+Epoch: [77 | 101] LR: 0.000252
+loss = 30.178, lr = 0.000252, acc = 0.645, epoch = 77, dur = 0.00s/it, [0/5005]
+loss = 26.966, lr = 0.000252, acc = 0.570, epoch = 77, dur = 0.00s/it, [1000/5005]
+loss = 38.382, lr = 0.000252, acc = 0.555, epoch = 77, dur = 0.00s/it, [2000/5005]
+loss = 29.147, lr = 0.000252, acc = 0.551, epoch = 77, dur = 0.00s/it, [3000/5005]
+loss = 29.752, lr = 0.000252, acc = 0.598, epoch = 77, dur = 0.00s/it, [4000/5005]
+loss = 30.005, lr = 0.000252, acc = 0.586, epoch = 77, dur = 0.00s/it, [5000/5005]
+avg_loss = 27.485, avg_acc = 0.622, epoch = 77, dur = 34.63
+
+Epoch: [78 | 101] LR: 0.000248
+loss = 26.922, lr = 0.000248, acc = 0.648, epoch = 78, dur = 0.00s/it, [0/5005]
+loss = 26.075, lr = 0.000248, acc = 0.633, epoch = 78, dur = 0.00s/it, [1000/5005]
+loss = 25.101, lr = 0.000248, acc = 0.617, epoch = 78, dur = 0.00s/it, [2000/5005]
+loss = 30.635, lr = 0.000248, acc = 0.648, epoch = 78, dur = 0.00s/it, [3000/5005]
+loss = 28.208, lr = 0.000248, acc = 0.660, epoch = 78, dur = 0.00s/it, [4000/5005]
+loss = 29.212, lr = 0.000248, acc = 0.605, epoch = 78, dur = 0.00s/it, [5000/5005]
+avg_loss = 27.333, avg_acc = 0.623, epoch = 78, dur = 33.25
+
+Epoch: [79 | 101] LR: 0.000245
+loss = 25.628, lr = 0.000245, acc = 0.660, epoch = 79, dur = 0.00s/it, [0/5005]
+loss = 34.366, lr = 0.000245, acc = 0.598, epoch = 79, dur = 0.00s/it, [1000/5005]
+loss = 31.801, lr = 0.000245, acc = 0.652, epoch = 79, dur = 0.00s/it, [2000/5005]
+loss = 24.068, lr = 0.000245, acc = 0.625, epoch = 79, dur = 0.00s/it, [3000/5005]
+loss = 27.954, lr = 0.000245, acc = 0.637, epoch = 79, dur = 0.00s/it, [4000/5005]
+loss = 25.367, lr = 0.000245, acc = 0.613, epoch = 79, dur = 0.00s/it, [5000/5005]
+avg_loss = 27.186, avg_acc = 0.623, epoch = 79, dur = 32.30
+
+Epoch: [80 | 101] LR: 0.000242
+loss = 30.606, lr = 0.000242, acc = 0.590, epoch = 80, dur = 0.01s/it, [0/5005]
+loss = 24.732, lr = 0.000242, acc = 0.633, epoch = 80, dur = 0.00s/it, [1000/5005]
+loss = 22.570, lr = 0.000242, acc = 0.637, epoch = 80, dur = 0.00s/it, [2000/5005]
+loss = 30.436, lr = 0.000242, acc = 0.578, epoch = 80, dur = 0.00s/it, [3000/5005]
+loss = 24.425, lr = 0.000242, acc = 0.648, epoch = 80, dur = 0.00s/it, [4000/5005]
+loss = 28.541, lr = 0.000242, acc = 0.629, epoch = 80, dur = 0.00s/it, [5000/5005]
+avg_loss = 27.040, avg_acc = 0.624, epoch = 80, dur = 31.11
+
+Epoch: [81 | 101] LR: 0.000240
+loss = 24.226, lr = 0.000240, acc = 0.609, epoch = 81, dur = 0.01s/it, [0/5005]
+loss = 29.154, lr = 0.000240, acc = 0.625, epoch = 81, dur = 0.00s/it, [1000/5005]
+loss = 23.738, lr = 0.000240, acc = 0.656, epoch = 81, dur = 0.00s/it, [2000/5005]
+loss = 24.131, lr = 0.000240, acc = 0.645, epoch = 81, dur = 0.00s/it, [3000/5005]
+loss = 25.811, lr = 0.000240, acc = 0.633, epoch = 81, dur = 0.00s/it, [4000/5005]
+loss = 27.743, lr = 0.000240, acc = 0.590, epoch = 81, dur = 0.00s/it, [5000/5005]
+avg_loss = 26.896, avg_acc = 0.624, epoch = 81, dur = 31.40
+
+Epoch: [82 | 101] LR: 0.000237
+loss = 34.927, lr = 0.000237, acc = 0.570, epoch = 82, dur = 0.00s/it, [0/5005]
+loss = 25.742, lr = 0.000237, acc = 0.645, epoch = 82, dur = 0.00s/it, [1000/5005]
+loss = 23.135, lr = 0.000237, acc = 0.645, epoch = 82, dur = 0.00s/it, [2000/5005]
+loss = 24.227, lr = 0.000237, acc = 0.691, epoch = 82, dur = 0.00s/it, [3000/5005]
+loss = 27.236, lr = 0.000237, acc = 0.633, epoch = 82, dur = 0.00s/it, [4000/5005]
+loss = 29.320, lr = 0.000237, acc = 0.668, epoch = 82, dur = 0.00s/it, [5000/5005]
+avg_loss = 26.754, avg_acc = 0.624, epoch = 82, dur = 34.43
+
+Epoch: [83 | 101] LR: 0.000234
+loss = 28.670, lr = 0.000234, acc = 0.645, epoch = 83, dur = 0.00s/it, [0/5005]
+loss = 24.209, lr = 0.000234, acc = 0.660, epoch = 83, dur = 0.00s/it, [1000/5005]
+loss = 31.803, lr = 0.000234, acc = 0.609, epoch = 83, dur = 0.00s/it, [2000/5005]
+loss = 23.458, lr = 0.000234, acc = 0.648, epoch = 83, dur = 0.00s/it, [3000/5005]
+loss = 25.848, lr = 0.000234, acc = 0.590, epoch = 83, dur = 0.00s/it, [4000/5005]
+loss = 22.066, lr = 0.000234, acc = 0.703, epoch = 83, dur = 0.00s/it, [5000/5005]
+avg_loss = 26.618, avg_acc = 0.625, epoch = 83, dur = 34.64
+
+Epoch: [84 | 101] LR: 0.000231
+loss = 27.599, lr = 0.000231, acc = 0.621, epoch = 84, dur = 0.00s/it, [0/5005]
+loss = 23.132, lr = 0.000231, acc = 0.652, epoch = 84, dur = 0.00s/it, [1000/5005]
+loss = 25.589, lr = 0.000231, acc = 0.613, epoch = 84, dur = 0.00s/it, [2000/5005]
+loss = 30.073, lr = 0.000231, acc = 0.555, epoch = 84, dur = 0.00s/it, [3000/5005]
+loss = 25.945, lr = 0.000231, acc = 0.633, epoch = 84, dur = 0.00s/it, [4000/5005]
+loss = 28.676, lr = 0.000231, acc = 0.605, epoch = 84, dur = 0.00s/it, [5000/5005]
+avg_loss = 26.481, avg_acc = 0.625, epoch = 84, dur = 30.69
+
+Epoch: [85 | 101] LR: 0.000229
+loss = 21.700, lr = 0.000229, acc = 0.629, epoch = 85, dur = 0.00s/it, [0/5005]
+loss = 28.570, lr = 0.000229, acc = 0.621, epoch = 85, dur = 0.00s/it, [1000/5005]
+loss = 22.221, lr = 0.000229, acc = 0.656, epoch = 85, dur = 0.00s/it, [2000/5005]
+loss = 31.779, lr = 0.000229, acc = 0.590, epoch = 85, dur = 0.00s/it, [3000/5005]
+loss = 22.731, lr = 0.000229, acc = 0.656, epoch = 85, dur = 0.00s/it, [4000/5005]
+loss = 25.569, lr = 0.000229, acc = 0.605, epoch = 85, dur = 0.00s/it, [5000/5005]
+avg_loss = 26.349, avg_acc = 0.626, epoch = 85, dur = 32.34
+
+Epoch: [86 | 101] LR: 0.000226
+loss = 19.391, lr = 0.000226, acc = 0.688, epoch = 86, dur = 0.00s/it, [0/5005]
+loss = 22.527, lr = 0.000226, acc = 0.648, epoch = 86, dur = 0.00s/it, [1000/5005]
+loss = 25.630, lr = 0.000226, acc = 0.598, epoch = 86, dur = 0.00s/it, [2000/5005]
+loss = 32.239, lr = 0.000226, acc = 0.605, epoch = 86, dur = 0.00s/it, [3000/5005]
+loss = 40.346, lr = 0.000226, acc = 0.539, epoch = 86, dur = 0.00s/it, [4000/5005]
+loss = 21.936, lr = 0.000226, acc = 0.684, epoch = 86, dur = 0.00s/it, [5000/5005]
+avg_loss = 26.220, avg_acc = 0.626, epoch = 86, dur = 30.79
+
+Epoch: [87 | 101] LR: 0.000223
+loss = 29.314, lr = 0.000223, acc = 0.609, epoch = 87, dur = 0.00s/it, [0/5005]
+loss = 24.147, lr = 0.000223, acc = 0.605, epoch = 87, dur = 0.00s/it, [1000/5005]
+loss = 26.482, lr = 0.000223, acc = 0.594, epoch = 87, dur = 0.00s/it, [2000/5005]
+loss = 25.921, lr = 0.000223, acc = 0.637, epoch = 87, dur = 0.00s/it, [3000/5005]
+loss = 24.037, lr = 0.000223, acc = 0.664, epoch = 87, dur = 0.00s/it, [4000/5005]
+loss = 22.601, lr = 0.000223, acc = 0.629, epoch = 87, dur = 0.00s/it, [5000/5005]
+avg_loss = 26.087, avg_acc = 0.627, epoch = 87, dur = 31.83
+
+Epoch: [88 | 101] LR: 0.000221
+loss = 26.256, lr = 0.000221, acc = 0.637, epoch = 88, dur = 0.00s/it, [0/5005]
+loss = 25.016, lr = 0.000221, acc = 0.641, epoch = 88, dur = 0.00s/it, [1000/5005]
+loss = 32.206, lr = 0.000221, acc = 0.570, epoch = 88, dur = 0.00s/it, [2000/5005]
+loss = 28.208, lr = 0.000221, acc = 0.586, epoch = 88, dur = 0.00s/it, [3000/5005]
+loss = 32.824, lr = 0.000221, acc = 0.605, epoch = 88, dur = 0.00s/it, [4000/5005]
+loss = 27.174, lr = 0.000221, acc = 0.617, epoch = 88, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.964, avg_acc = 0.627, epoch = 88, dur = 34.27
+
+Epoch: [89 | 101] LR: 0.000219
+loss = 26.029, lr = 0.000219, acc = 0.629, epoch = 89, dur = 0.00s/it, [0/5005]
+loss = 29.419, lr = 0.000219, acc = 0.594, epoch = 89, dur = 0.00s/it, [1000/5005]
+loss = 19.212, lr = 0.000219, acc = 0.664, epoch = 89, dur = 0.00s/it, [2000/5005]
+loss = 25.855, lr = 0.000219, acc = 0.613, epoch = 89, dur = 0.00s/it, [3000/5005]
+loss = 22.776, lr = 0.000219, acc = 0.645, epoch = 89, dur = 0.00s/it, [4000/5005]
+loss = 25.486, lr = 0.000219, acc = 0.609, epoch = 89, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.835, avg_acc = 0.628, epoch = 89, dur = 33.69
+
+Epoch: [90 | 101] LR: 0.000216
+loss = 28.834, lr = 0.000216, acc = 0.629, epoch = 90, dur = 0.00s/it, [0/5005]
+loss = 29.778, lr = 0.000216, acc = 0.598, epoch = 90, dur = 0.00s/it, [1000/5005]
+loss = 25.124, lr = 0.000216, acc = 0.641, epoch = 90, dur = 0.00s/it, [2000/5005]
+loss = 22.589, lr = 0.000216, acc = 0.652, epoch = 90, dur = 0.00s/it, [3000/5005]
+loss = 21.422, lr = 0.000216, acc = 0.668, epoch = 90, dur = 0.00s/it, [4000/5005]
+loss = 24.628, lr = 0.000216, acc = 0.656, epoch = 90, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.714, avg_acc = 0.628, epoch = 90, dur = 35.01
+
+Epoch: [91 | 101] LR: 0.000214
+loss = 26.506, lr = 0.000214, acc = 0.652, epoch = 91, dur = 0.00s/it, [0/5005]
+loss = 25.983, lr = 0.000214, acc = 0.637, epoch = 91, dur = 0.00s/it, [1000/5005]
+loss = 24.652, lr = 0.000214, acc = 0.652, epoch = 91, dur = 0.00s/it, [2000/5005]
+loss = 27.354, lr = 0.000214, acc = 0.617, epoch = 91, dur = 0.00s/it, [3000/5005]
+loss = 25.408, lr = 0.000214, acc = 0.629, epoch = 91, dur = 0.00s/it, [4000/5005]
+loss = 18.819, lr = 0.000214, acc = 0.672, epoch = 91, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.597, avg_acc = 0.628, epoch = 91, dur = 33.96
+
+Epoch: [92 | 101] LR: 0.000212
+loss = 24.875, lr = 0.000212, acc = 0.645, epoch = 92, dur = 0.00s/it, [0/5005]
+loss = 27.946, lr = 0.000212, acc = 0.609, epoch = 92, dur = 0.00s/it, [1000/5005]
+loss = 25.102, lr = 0.000212, acc = 0.613, epoch = 92, dur = 0.00s/it, [2000/5005]
+loss = 22.668, lr = 0.000212, acc = 0.656, epoch = 92, dur = 0.00s/it, [3000/5005]
+loss = 31.226, lr = 0.000212, acc = 0.582, epoch = 92, dur = 0.00s/it, [4000/5005]
+loss = 22.404, lr = 0.000212, acc = 0.676, epoch = 92, dur = 0.01s/it, [5000/5005]
+avg_loss = 25.476, avg_acc = 0.628, epoch = 92, dur = 38.08
+
+Epoch: [93 | 101] LR: 0.000209
+loss = 21.472, lr = 0.000209, acc = 0.613, epoch = 93, dur = 0.00s/it, [0/5005]
+loss = 22.502, lr = 0.000209, acc = 0.641, epoch = 93, dur = 0.00s/it, [1000/5005]
+loss = 21.303, lr = 0.000209, acc = 0.660, epoch = 93, dur = 0.00s/it, [2000/5005]
+loss = 25.958, lr = 0.000209, acc = 0.602, epoch = 93, dur = 0.00s/it, [3000/5005]
+loss = 29.927, lr = 0.000209, acc = 0.625, epoch = 93, dur = 0.00s/it, [4000/5005]
+loss = 29.214, lr = 0.000209, acc = 0.617, epoch = 93, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.360, avg_acc = 0.629, epoch = 93, dur = 31.43
+
+Epoch: [94 | 101] LR: 0.000207
+loss = 22.468, lr = 0.000207, acc = 0.688, epoch = 94, dur = 0.00s/it, [0/5005]
+loss = 23.216, lr = 0.000207, acc = 0.668, epoch = 94, dur = 0.00s/it, [1000/5005]
+loss = 27.144, lr = 0.000207, acc = 0.617, epoch = 94, dur = 0.00s/it, [2000/5005]
+loss = 26.450, lr = 0.000207, acc = 0.633, epoch = 94, dur = 0.00s/it, [3000/5005]
+loss = 26.131, lr = 0.000207, acc = 0.637, epoch = 94, dur = 0.00s/it, [4000/5005]
+loss = 25.426, lr = 0.000207, acc = 0.617, epoch = 94, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.246, avg_acc = 0.629, epoch = 94, dur = 30.68
+
+Epoch: [95 | 101] LR: 0.000205
+loss = 24.639, lr = 0.000205, acc = 0.676, epoch = 95, dur = 0.00s/it, [0/5005]
+loss = 26.401, lr = 0.000205, acc = 0.645, epoch = 95, dur = 0.00s/it, [1000/5005]
+loss = 29.617, lr = 0.000205, acc = 0.613, epoch = 95, dur = 0.00s/it, [2000/5005]
+loss = 28.558, lr = 0.000205, acc = 0.621, epoch = 95, dur = 0.00s/it, [3000/5005]
+loss = 33.159, lr = 0.000205, acc = 0.570, epoch = 95, dur = 0.00s/it, [4000/5005]
+loss = 30.285, lr = 0.000205, acc = 0.586, epoch = 95, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.131, avg_acc = 0.630, epoch = 95, dur = 31.19
+
+Epoch: [96 | 101] LR: 0.000203
+loss = 21.581, lr = 0.000203, acc = 0.699, epoch = 96, dur = 0.00s/it, [0/5005]
+loss = 19.283, lr = 0.000203, acc = 0.695, epoch = 96, dur = 0.00s/it, [1000/5005]
+loss = 23.547, lr = 0.000203, acc = 0.629, epoch = 96, dur = 0.00s/it, [2000/5005]
+loss = 26.906, lr = 0.000203, acc = 0.574, epoch = 96, dur = 0.00s/it, [3000/5005]
+loss = 17.912, lr = 0.000203, acc = 0.688, epoch = 96, dur = 0.00s/it, [4000/5005]
+loss = 22.303, lr = 0.000203, acc = 0.641, epoch = 96, dur = 0.00s/it, [5000/5005]
+avg_loss = 25.021, avg_acc = 0.630, epoch = 96, dur = 29.68
+
+Epoch: [97 | 101] LR: 0.000201
+loss = 23.487, lr = 0.000201, acc = 0.691, epoch = 97, dur = 0.00s/it, [0/5005]
+loss = 23.715, lr = 0.000201, acc = 0.641, epoch = 97, dur = 0.00s/it, [1000/5005]
+loss = 23.216, lr = 0.000201, acc = 0.672, epoch = 97, dur = 0.00s/it, [2000/5005]
+loss = 26.984, lr = 0.000201, acc = 0.531, epoch = 97, dur = 0.00s/it, [3000/5005]
+loss = 20.486, lr = 0.000201, acc = 0.645, epoch = 97, dur = 0.00s/it, [4000/5005]
+loss = 25.246, lr = 0.000201, acc = 0.625, epoch = 97, dur = 0.00s/it, [5000/5005]
+avg_loss = 24.909, avg_acc = 0.630, epoch = 97, dur = 29.86
+
+Epoch: [98 | 101] LR: 0.000199
+loss = 27.415, lr = 0.000199, acc = 0.629, epoch = 98, dur = 0.00s/it, [0/5005]
+loss = 26.239, lr = 0.000199, acc = 0.652, epoch = 98, dur = 0.00s/it, [1000/5005]
+loss = 29.289, lr = 0.000199, acc = 0.570, epoch = 98, dur = 0.00s/it, [2000/5005]
+loss = 26.894, lr = 0.000199, acc = 0.605, epoch = 98, dur = 0.00s/it, [3000/5005]
+loss = 25.982, lr = 0.000199, acc = 0.609, epoch = 98, dur = 0.00s/it, [4000/5005]
+loss = 27.710, lr = 0.000199, acc = 0.594, epoch = 98, dur = 0.00s/it, [5000/5005]
+avg_loss = 24.804, avg_acc = 0.631, epoch = 98, dur = 34.33
+
+Epoch: [99 | 101] LR: 0.000197
+loss = 24.672, lr = 0.000197, acc = 0.633, epoch = 99, dur = 0.00s/it, [0/5005]
+loss = 22.379, lr = 0.000197, acc = 0.648, epoch = 99, dur = 0.01s/it, [1000/5005]
+loss = 24.039, lr = 0.000197, acc = 0.656, epoch = 99, dur = 0.00s/it, [2000/5005]
+loss = 24.149, lr = 0.000197, acc = 0.625, epoch = 99, dur = 0.00s/it, [3000/5005]
+loss = 25.850, lr = 0.000197, acc = 0.648, epoch = 99, dur = 0.00s/it, [4000/5005]
+loss = 20.157, lr = 0.000197, acc = 0.652, epoch = 99, dur = 0.00s/it, [5000/5005]
+avg_loss = 24.697, avg_acc = 0.631, epoch = 99, dur = 37.38
+
+Epoch: [100 | 101] LR: 0.000195
+loss = 25.084, lr = 0.000195, acc = 0.645, epoch = 100, dur = 0.01s/it, [0/5005]
+loss = 20.174, lr = 0.000195, acc = 0.672, epoch = 100, dur = 0.00s/it, [1000/5005]
+loss = 26.868, lr = 0.000195, acc = 0.574, epoch = 100, dur = 0.00s/it, [2000/5005]
+loss = 22.727, lr = 0.000195, acc = 0.625, epoch = 100, dur = 0.00s/it, [3000/5005]
+loss = 21.445, lr = 0.000195, acc = 0.656, epoch = 100, dur = 0.00s/it, [4000/5005]
+loss = 22.756, lr = 0.000195, acc = 0.617, epoch = 100, dur = 0.00s/it, [5000/5005]
+avg_loss = 24.594, avg_acc = 0.632, epoch = 100, dur = 33.33
